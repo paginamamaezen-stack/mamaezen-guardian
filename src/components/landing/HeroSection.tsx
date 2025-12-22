@@ -1,5 +1,5 @@
 import heroVideo from "@/assets/hero-video.mp4";
-import { Button } from "@/components/ui/button";
+import CTAButton from "./CTAButton";
 
 interface HeroSectionProps {
   checkoutUrl: string;
@@ -15,7 +15,7 @@ const HeroSection = ({ checkoutUrl }: HeroSectionProps) => {
           loop
           muted
           playsInline
-          className="w-full max-w-[280px] mx-auto rounded-xl"
+          className="w-full max-w-[320px] mx-auto rounded-2xl border-2 border-primary/30 shadow-glow"
         />
       </div>
       
@@ -30,15 +30,7 @@ const HeroSection = ({ checkoutUrl }: HeroSectionProps) => {
         Você não é uma mãe ruim — só não teve orientação certa.
       </p>
 
-      <Button
-        asChild
-        size="lg"
-        className="w-full gradient-primary shadow-glow animate-pulse-glow text-base font-bold py-5 rounded-lg"
-      >
-        <a href={checkoutUrl} target="_blank" rel="noopener noreferrer">
-          Quero Proteger Meu Bebê Agora
-        </a>
-      </Button>
+      <CTAButton checkoutUrl={checkoutUrl} variant="hero" />
     </section>
   );
 };
