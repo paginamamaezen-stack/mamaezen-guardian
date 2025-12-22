@@ -1,4 +1,4 @@
-import heroImage from "@/assets/hero-mom-baby.png";
+import heroVideo from "@/assets/hero-video.mp4";
 import { Button } from "@/components/ui/button";
 
 interface HeroSectionProps {
@@ -9,9 +9,12 @@ const HeroSection = ({ checkoutUrl }: HeroSectionProps) => {
   return (
     <section className="text-center mb-10 animate-fade-in">
       <div className="mb-6">
-        <img 
-          src={heroImage} 
-          alt="Mãe protegendo seu bebê" 
+        <video 
+          src={heroVideo} 
+          autoPlay
+          loop
+          muted
+          playsInline
           className="w-full max-w-[280px] mx-auto rounded-xl"
         />
       </div>
