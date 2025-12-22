@@ -1,11 +1,21 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import TopBadges from "@/components/landing/TopBadges";
+import HeroSection from "@/components/landing/HeroSection";
+import PainSection from "@/components/landing/PainSection";
+import SolutionSection from "@/components/landing/SolutionSection";
+import OfferSection from "@/components/landing/OfferSection";
+
+// TODO: Replace with actual checkout URL
+const CHECKOUT_URL = "https://seu-link-de-pagamento.com";
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <div className="min-h-screen pb-20">
+      <div className="container py-6">
+        <TopBadges />
+        <HeroSection checkoutUrl={CHECKOUT_URL} />
+        <PainSection />
+        <SolutionSection />
+        <OfferSection checkoutUrl={CHECKOUT_URL} />
       </div>
     </div>
   );
