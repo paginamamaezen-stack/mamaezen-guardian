@@ -74,9 +74,16 @@ const Index = () => {
           para manter em segurança o seu filhote
         </h1>
 
+        <p className="text-muted-foreground text-[15px] leading-relaxed mb-4">
+          <strong className="text-foreground">90% das mães sofrem em silêncio, mas isso acaba hoje!!!</strong>
+        </p>
+
+        <p className="text-muted-foreground text-[15px] leading-relaxed mb-2">
+          Você não é uma mãe ruim.
+        </p>
+
         <p className="text-muted-foreground text-[15px] leading-relaxed mb-7">
-          90% das mães sofrem em silêncio.<br />
-          Você não é uma mãe ruim — só não teve orientação certa.
+          Você só não teve os ensinamentos de alguém com experiência própria.
         </p>
 
         <a
@@ -156,9 +163,10 @@ const Index = () => {
         )}
       </section>
 
-      {/* DOR */}
+      {/* ROTINAS DIÁRIAS */}
       <section className="gradient-card border border-border rounded-[18px] p-[22px] my-9">
-        <h2 className="text-lg font-bold mb-4">Rotinas diárias sem solução</h2>
+        <h2 className="text-lg font-bold mb-2">Rotinas Diárias!!!!</h2>
+        <p className="text-primary text-sm font-semibold mb-4">TODOS OS DIAS SEM SOLUÇÃO</p>
         <div className="flex flex-col gap-3">
           <div className="flex gap-2.5 text-[#ddd] text-[15px]">
             <span className="text-primary font-bold">&amp;</span> bebê chorando toda hora
@@ -169,23 +177,56 @@ const Index = () => {
           <div className="flex gap-2.5 text-[#ddd] text-[15px]">
             <span className="text-primary font-bold">&amp;</span> casa pra arrumar, roupa pra lavar
           </div>
-          <div className="flex gap-2.5 text-[#ddd] text-[15px]">
-            <span className="text-primary font-bold">&amp;</span> sono quebrado e medo de errar
+        </div>
+      </section>
+
+      {/* CONSEQUÊNCIAS */}
+      <section className="gradient-card border border-border rounded-[18px] p-[22px] my-9">
+        <h2 className="text-lg font-bold mb-4 text-primary">Consequências de tudo isso</h2>
+        
+        <div className="space-y-5">
+          <div>
+            <div className="flex gap-2.5 text-[#ddd] text-[15px] mb-2">
+              <span className="text-primary font-bold">&amp;</span> 
+              <span>você descontando tudo no marido pai do seu bebê</span>
+            </div>
+            <p className="text-muted-foreground text-sm pl-5 leading-relaxed">
+              Que muitas das vezes chega cansado, exausto, preocupado e tudo que ele quer é ver a família. 
+              Ver você, ver o bebê, mas muitas das vezes acontece pelo contrário: brigas e apontamentos.
+            </p>
+          </div>
+
+          <div className="border-t border-border pt-4">
+            <div className="flex gap-2.5 text-[#ddd] text-[15px] font-bold">
+              <span className="text-primary">&amp;</span> A REALIDADE É OUTRA
+            </div>
           </div>
         </div>
       </section>
 
-      {/* SOLUÇÃO */}
+      {/* BOLA DE NEVE */}
       <section className="gradient-card border border-border rounded-[18px] p-[22px] my-9">
-        <h3 className="text-xl font-bold mb-3">O que é o MamãeZen</h3>
-        <p className="text-muted-foreground leading-relaxed text-[15px]">
-          O MamãeZen é o seu plano diário de maternidade.
-          Checklists simples, rotinas de sono, alertas de emergência
-          e apoio real — tudo na palma da sua mão, sem julgamento.
+        <div className="flex gap-2.5 text-[#ddd] text-[15px] mb-4">
+          <span className="text-primary font-bold">&amp;</span> 
+          <span className="font-bold">com isso começa a virar uma bola de neve</span>
+        </div>
+        
+        <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+          Seu bebê, pelo quão pequeno seja, ele observa tudo como um HD de um MacBook com armazenamento quase que infinito…
         </p>
+        
+        <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+          Com isso seu bebê vai crescer vendo essa rotina diária...
+        </p>
+
+        <div className="bg-accent/50 border border-primary/30 rounded-[14px] p-4 mt-4">
+          <p className="text-primary font-bold text-center text-sm">
+            🦅 VOCÊ DEVERIA SER UMA ÁGUIA QUE PROTEGE O SEU FILHOTE
+          </p>
+        </div>
       </section>
 
-      {/* AVATAR */}
+      {/* AVATAR PROTETORA */}
       <div className="flex justify-center my-8">
         <img 
           src={avatarProtector} 
@@ -194,7 +235,53 @@ const Index = () => {
         />
       </div>
 
-      {/* OFERTA */}
+      {/* BRIGAS E DÚVIDAS */}
+      <section className="gradient-card border border-border rounded-[18px] p-[22px] my-9">
+        <div className="flex gap-2.5 text-[#ddd] text-[15px] mb-4">
+          <span className="text-primary font-bold">&amp;</span> 
+          <span className="font-bold">aí vêm as brigas, as dúvidas</span>
+        </div>
+        
+        <p className="text-muted-foreground text-sm leading-relaxed">
+          Um culpa o outro quando na verdade os dois deveriam sentar juntos e resolver tudo que está acontecendo.
+        </p>
+      </section>
+
+      {/* SEPARAÇÃO */}
+      <section className="gradient-card border border-border rounded-[18px] p-[22px] my-9">
+        <div className="flex gap-2.5 text-[#ddd] text-[15px] mb-4">
+          <span className="text-primary font-bold">&amp;</span> 
+          <span className="font-bold">até a própria separação, trazendo mais tristeza</span>
+        </div>
+        
+        <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+          Trazendo um sofrimento enorme para seu bebê. Pois ele sente tudo, ele é apenas um anjinho que confia em vocês.
+        </p>
+        
+        <p className="text-muted-foreground text-sm leading-relaxed italic">
+          Deus deu e porque vocês são capazes, pois Deus é perfeito…
+        </p>
+      </section>
+
+      {/* CTA ENTRADA DE FUNIL */}
+      <section className="gradient-offer border border-primary/20 rounded-[22px] p-[26px] text-center shadow-offer my-9">
+        <p className="text-foreground text-[17px] leading-relaxed mb-4">
+          Deixa eu te mostrar que, com apenas <span className="text-primary font-bold">uma carta na manga</span>, você não vai precisar mais passar por isso sozinha.
+        </p>
+        
+        <p className="text-primary text-xl font-extrabold mb-6">
+          Saiba que você é foda…
+        </p>
+
+        <a
+          href={CHECKOUT_URL}
+          className="block w-full gradient-primary py-4 rounded-[14px] font-extrabold text-primary-foreground text-base"
+        >
+          Quero Minha Carta na Manga Agora
+        </a>
+      </section>
+
+      {/* OFERTA FINAL */}
       <section id="offer" className="gradient-offer border border-primary/20 rounded-[22px] p-[26px] text-center shadow-offer">
         <div className="bg-accent inline-block px-3.5 py-1.5 rounded-[20px] text-xs mb-3.5">
           Fundadora Vitalícia
