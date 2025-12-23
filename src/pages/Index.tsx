@@ -55,9 +55,11 @@ const Index = () => {
         </div>
       </div>
 
-      {/* HERO COM VÍDEO */}
-      <section className="text-center mb-10">
-        <div className="rounded-[18px] overflow-hidden mb-6">
+      {/* ═══════════════════════════════════════════════════════════
+          HERO SECTION - HEADLINE PRINCIPAL
+      ═══════════════════════════════════════════════════════════ */}
+      <section className="text-center mb-12">
+        <div className="rounded-[18px] overflow-hidden mb-8 border-2 border-primary/30 shadow-glow">
           <video
             src={heroVideo}
             autoPlay
@@ -68,33 +70,47 @@ const Index = () => {
           />
         </div>
 
-        <h1 className="text-[26px] leading-[1.25] font-extrabold mb-4">
+        {/* HEADLINE - A pergunta impactante */}
+        <h1 className="text-[28px] leading-[1.2] font-black mb-6 tracking-tight">
           A pergunta que não quer calar é se você teria{" "}
-          <span className="text-primary">coragem de fazer de tudo</span>{" "}
-          para manter em segurança o seu filhote
+          <span className="text-primary block mt-2 text-[32px]">
+            CORAGEM DE FAZER DE TUDO
+          </span>{" "}
+          <span className="text-muted-foreground text-[22px] font-semibold">
+            para manter em segurança o seu filhote
+          </span>
         </h1>
 
-        <p className="text-muted-foreground text-[15px] leading-relaxed mb-4">
-          <strong className="text-foreground">90% das mães sofrem em silêncio, mas isso acaba hoje!!!</strong>
-        </p>
+        {/* SUBTITULO CTA - Impactante */}
+        <div className="bg-gradient-to-b from-primary/20 to-transparent border-l-4 border-primary rounded-r-lg p-5 mb-6 text-left">
+          <p className="text-foreground text-lg font-bold mb-3">
+            90% das mães sofrem em silêncio...
+          </p>
+          <p className="text-primary text-2xl font-black uppercase tracking-wide">
+            MAS ISSO ACABA HOJE!!!
+          </p>
+        </div>
 
-        <p className="text-muted-foreground text-[15px] leading-relaxed mb-2">
-          Você não é uma mãe ruim.
-        </p>
-
-        <p className="text-muted-foreground text-[15px] leading-relaxed mb-7">
-          Você só não teve os ensinamentos de alguém com experiência própria.
-        </p>
+        <div className="space-y-3 mb-8">
+          <p className="text-foreground text-lg font-semibold">
+            ❌ Você <span className="text-primary font-black underline decoration-primary">NÃO</span> é uma mãe ruim.
+          </p>
+          <p className="text-muted-foreground text-base leading-relaxed">
+            Você só não teve os <span className="text-foreground font-bold">ensinamentos de alguém</span> com experiência própria.
+          </p>
+        </div>
 
         <a
           href={CHECKOUT_URL}
-          className="block w-full gradient-primary text-primary-foreground py-[18px] text-base font-bold rounded-[14px] shadow-glow text-center"
+          className="block w-full gradient-primary text-primary-foreground py-5 text-lg font-black rounded-[14px] shadow-glow text-center uppercase tracking-wide"
         >
-          Quero Proteger Meu Bebê Agora
+          🛡️ Quero Proteger Meu Bebê Agora
         </a>
       </section>
 
-      {/* QUIZ */}
+      {/* ═══════════════════════════════════════════════════════════
+          QUIZ INTERATIVO
+      ═══════════════════════════════════════════════════════════ */}
       <section className="gradient-card border border-border rounded-[18px] p-[22px] my-9">
         {!quizStarted ? (
           <div className="text-center">
@@ -163,155 +179,280 @@ const Index = () => {
         )}
       </section>
 
-      {/* ROTINAS DIÁRIAS */}
-      <section className="gradient-card border border-border rounded-[18px] p-[22px] my-9">
-        <h2 className="text-lg font-bold mb-2">Rotinas Diárias!!!!</h2>
-        <p className="text-primary text-sm font-semibold mb-4">TODOS OS DIAS SEM SOLUÇÃO</p>
-        <div className="flex flex-col gap-3">
-          <div className="flex gap-2.5 text-[#ddd] text-[15px]">
-            <span className="text-primary font-bold">&amp;</span> bebê chorando toda hora
-          </div>
-          <div className="flex gap-2.5 text-[#ddd] text-[15px]">
-            <span className="text-primary font-bold">&amp;</span> bebê mijando, fazendo cocô
-          </div>
-          <div className="flex gap-2.5 text-[#ddd] text-[15px]">
-            <span className="text-primary font-bold">&amp;</span> casa pra arrumar, roupa pra lavar
-          </div>
-        </div>
-      </section>
-
-      {/* CONSEQUÊNCIAS */}
-      <section className="gradient-card border border-border rounded-[18px] p-[22px] my-9">
-        <h2 className="text-lg font-bold mb-4 text-primary">Consequências de tudo isso</h2>
-        
-        <div className="space-y-5">
-          <div>
-            <div className="flex gap-2.5 text-[#ddd] text-[15px] mb-2">
-              <span className="text-primary font-bold">&amp;</span> 
-              <span>você descontando tudo no marido pai do seu bebê</span>
-            </div>
-            <p className="text-muted-foreground text-sm pl-5 leading-relaxed">
-              Que muitas das vezes chega cansado, exausto, preocupado e tudo que ele quer é ver a família. 
-              Ver você, ver o bebê, mas muitas das vezes acontece pelo contrário: brigas e apontamentos.
+      {/* ═══════════════════════════════════════════════════════════
+          ROTINAS DIÁRIAS - O Problema
+      ═══════════════════════════════════════════════════════════ */}
+      <section className="gradient-card border border-border rounded-[18px] p-6 my-9">
+        {/* Header com destaque */}
+        <div className="text-center mb-6">
+          <span className="text-primary text-xs font-bold uppercase tracking-widest">O Problema</span>
+          <h2 className="text-2xl font-black mt-2 mb-1">ROTINAS DIÁRIAS!!!!</h2>
+          <div className="inline-block bg-primary/20 border border-primary/40 rounded-full px-4 py-1">
+            <p className="text-primary text-sm font-black uppercase tracking-wide">
+              ⚠️ TODOS OS DIAS SEM SOLUÇÃO
             </p>
           </div>
+        </div>
 
-          <div className="border-t border-border pt-4">
-            <div className="flex gap-2.5 text-[#ddd] text-[15px] font-bold">
-              <span className="text-primary">&amp;</span> A REALIDADE É OUTRA
-            </div>
+        {/* Lista com destaque visual */}
+        <div className="space-y-4">
+          <div className="flex items-start gap-3 bg-secondary/50 border-l-4 border-primary p-4 rounded-r-lg">
+            <span className="text-primary text-2xl font-black">&</span>
+            <p className="text-foreground text-base font-medium">
+              bebê <span className="text-primary font-bold">chorando toda hora</span>
+            </p>
+          </div>
+          <div className="flex items-start gap-3 bg-secondary/50 border-l-4 border-primary p-4 rounded-r-lg">
+            <span className="text-primary text-2xl font-black">&</span>
+            <p className="text-foreground text-base font-medium">
+              bebê <span className="text-primary font-bold">mijando, fazendo cocô</span>
+            </p>
+          </div>
+          <div className="flex items-start gap-3 bg-secondary/50 border-l-4 border-primary p-4 rounded-r-lg">
+            <span className="text-primary text-2xl font-black">&</span>
+            <p className="text-foreground text-base font-medium">
+              casa pra arrumar, <span className="text-primary font-bold">roupa pra lavar</span>
+            </p>
           </div>
         </div>
       </section>
 
-      {/* BOLA DE NEVE */}
-      <section className="gradient-card border border-border rounded-[18px] p-[22px] my-9">
-        <div className="flex gap-2.5 text-[#ddd] text-[15px] mb-4">
-          <span className="text-primary font-bold">&amp;</span> 
-          <span className="font-bold">com isso começa a virar uma bola de neve</span>
+      {/* ═══════════════════════════════════════════════════════════
+          CONSEQUÊNCIAS - O Impacto Real
+      ═══════════════════════════════════════════════════════════ */}
+      <section className="gradient-card border-2 border-primary/30 rounded-[18px] p-6 my-9">
+        {/* Header dramático */}
+        <div className="text-center mb-6">
+          <span className="text-primary text-xs font-bold uppercase tracking-widest">O Impacto</span>
+          <h2 className="text-2xl font-black text-primary mt-2">
+            💔 CONSEQUÊNCIAS DE TUDO ISSO
+          </h2>
         </div>
         
-        <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-          Seu bebê, pelo quão pequeno seja, ele observa tudo como um HD de um MacBook com armazenamento quase que infinito…
-        </p>
-        
-        <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-          Com isso seu bebê vai crescer vendo essa rotina diária...
-        </p>
+        <div className="space-y-6">
+          {/* Consequência 1 - Descontar no marido */}
+          <div className="bg-accent/30 border border-primary/20 rounded-xl p-5">
+            <div className="flex items-start gap-3 mb-3">
+              <span className="text-primary text-2xl font-black">&</span>
+              <h3 className="text-foreground text-lg font-bold">
+                Você descontando tudo no <span className="text-primary">marido pai do seu bebê</span>
+              </h3>
+            </div>
+            
+            <div className="pl-8 space-y-3">
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Que muitas das vezes chega <span className="text-foreground font-semibold">cansado, exausto, preocupado</span>...
+              </p>
+              <p className="text-foreground text-base font-medium">
+                E tudo que ele quer é <span className="text-primary font-bold">ver a família</span>. Ver você. Ver o bebê.
+              </p>
+              <div className="bg-primary/10 border-l-2 border-primary p-3 rounded-r-lg">
+                <p className="text-muted-foreground text-sm italic">
+                  Mas muitas das vezes acontece pelo contrário: <span className="text-primary font-bold">brigas e apontamentos</span>.
+                </p>
+              </div>
+            </div>
+          </div>
 
-        <div className="bg-accent/50 border border-primary/30 rounded-[14px] p-4 mt-4">
-          <p className="text-primary font-bold text-center text-sm">
-            🦅 VOCÊ DEVERIA SER UMA ÁGUIA QUE PROTEGE O SEU FILHOTE
+          {/* Destaque - A Realidade */}
+          <div className="bg-primary/20 border-2 border-primary rounded-xl p-4 text-center">
+            <p className="text-primary text-xl font-black uppercase tracking-wide">
+              & A REALIDADE É OUTRA
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════
+          BOLA DE NEVE - O Efeito Cascata
+      ═══════════════════════════════════════════════════════════ */}
+      <section className="gradient-card border border-border rounded-[18px] p-6 my-9">
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-5">
+          <span className="text-primary text-3xl font-black">&</span>
+          <h2 className="text-xl font-black text-foreground">
+            Com isso começa a virar uma <span className="text-primary">BOLA DE NEVE</span>
+          </h2>
+        </div>
+        
+        {/* Metáfora do HD */}
+        <div className="bg-secondary/80 border border-border rounded-xl p-5 mb-5">
+          <p className="text-foreground text-base leading-relaxed mb-3">
+            Seu bebê, <span className="text-primary font-bold">pelo quão pequeno seja</span>, ele observa <span className="font-bold underline">TUDO</span>...
+          </p>
+          <div className="bg-accent/50 border border-primary/30 rounded-lg p-4">
+            <p className="text-muted-foreground text-sm">
+              🖥️ Como um <span className="text-primary font-bold">HD de um MacBook</span> com armazenamento quase que infinito...
+            </p>
+          </div>
+        </div>
+        
+        {/* Alerta */}
+        <div className="bg-primary/10 border-l-4 border-primary p-4 rounded-r-lg mb-6">
+          <p className="text-foreground text-base font-semibold">
+            ⚠️ Com isso seu bebê vai <span className="text-primary font-bold">CRESCER</span> vendo essa rotina diária...
+          </p>
+        </div>
+
+        {/* CTA ÁGUIA - Destaque máximo */}
+        <div className="relative overflow-hidden bg-gradient-to-b from-primary/30 to-accent/50 border-2 border-primary rounded-2xl p-6 text-center">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_hsl(357_95%_47%_/_0.2),_transparent_70%)]"></div>
+          <div className="relative">
+            <p className="text-5xl mb-3">🦅</p>
+            <h3 className="text-primary text-xl font-black uppercase tracking-wide leading-tight">
+              VOCÊ DEVERIA SER UMA ÁGUIA<br/>
+              <span className="text-2xl">QUE PROTEGE O SEU FILHOTE</span>
+            </h3>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════
+          AVATAR PROTETORA
+      ═══════════════════════════════════════════════════════════ */}
+      <div className="flex justify-center my-10">
+        <div className="relative">
+          <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full"></div>
+          <img 
+            src={avatarProtector} 
+            alt="MamãeZen - Proteção" 
+            className="relative w-52 h-52 object-contain drop-shadow-[0_0_30px_hsl(357_95%_47%_/_0.5)]"
+          />
+        </div>
+      </div>
+
+      {/* ═══════════════════════════════════════════════════════════
+          BRIGAS E DÚVIDAS
+      ═══════════════════════════════════════════════════════════ */}
+      <section className="gradient-card border border-border rounded-[18px] p-6 my-9">
+        <div className="flex items-start gap-3 mb-4">
+          <span className="text-primary text-2xl font-black">&</span>
+          <h2 className="text-xl font-black text-foreground">
+            Aí vêm as <span className="text-primary">brigas</span>, as <span className="text-primary">dúvidas</span>
+          </h2>
+        </div>
+        
+        <div className="bg-secondary/50 rounded-xl p-5">
+          <p className="text-muted-foreground text-base leading-relaxed mb-3">
+            Um <span className="text-foreground font-bold">culpa o outro</span>...
+          </p>
+          <p className="text-foreground text-lg font-semibold">
+            Quando na verdade os dois deveriam <span className="text-primary font-bold">sentar juntos</span> e resolver tudo que está acontecendo.
           </p>
         </div>
       </section>
 
-      {/* AVATAR PROTETORA */}
-      <div className="flex justify-center my-8">
-        <img 
-          src={avatarProtector} 
-          alt="MamãeZen - Proteção" 
-          className="w-48 h-48 object-contain"
-        />
-      </div>
-
-      {/* BRIGAS E DÚVIDAS */}
-      <section className="gradient-card border border-border rounded-[18px] p-[22px] my-9">
-        <div className="flex gap-2.5 text-[#ddd] text-[15px] mb-4">
-          <span className="text-primary font-bold">&amp;</span> 
-          <span className="font-bold">aí vêm as brigas, as dúvidas</span>
+      {/* ═══════════════════════════════════════════════════════════
+          SEPARAÇÃO - O Pior Cenário
+      ═══════════════════════════════════════════════════════════ */}
+      <section className="bg-gradient-to-b from-primary/10 to-accent/30 border-2 border-primary/30 rounded-[18px] p-6 my-9">
+        <div className="flex items-start gap-3 mb-4">
+          <span className="text-primary text-2xl font-black">&</span>
+          <h2 className="text-xl font-black text-foreground">
+            Até a própria <span className="text-primary">SEPARAÇÃO</span>
+          </h2>
         </div>
         
-        <p className="text-muted-foreground text-sm leading-relaxed">
-          Um culpa o outro quando na verdade os dois deveriam sentar juntos e resolver tudo que está acontecendo.
-        </p>
-      </section>
-
-      {/* SEPARAÇÃO */}
-      <section className="gradient-card border border-border rounded-[18px] p-[22px] my-9">
-        <div className="flex gap-2.5 text-[#ddd] text-[15px] mb-4">
-          <span className="text-primary font-bold">&amp;</span> 
-          <span className="font-bold">até a própria separação, trazendo mais tristeza</span>
+        <div className="text-center mb-4">
+          <span className="text-3xl">💔</span>
+          <p className="text-primary font-bold text-lg mt-2">Trazendo mais tristeza...</p>
         </div>
         
-        <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-          Trazendo um sofrimento enorme para seu bebê. Pois ele sente tudo, ele é apenas um anjinho que confia em vocês.
-        </p>
-        
-        <p className="text-muted-foreground text-sm leading-relaxed italic">
-          Deus deu e porque vocês são capazes, pois Deus é perfeito…
-        </p>
+        <div className="bg-secondary/70 rounded-xl p-5 space-y-4">
+          <p className="text-foreground text-base leading-relaxed">
+            Trazendo um <span className="text-primary font-bold">sofrimento enorme</span> para seu bebê.
+          </p>
+          <p className="text-muted-foreground text-base leading-relaxed">
+            Pois ele <span className="text-foreground font-semibold">sente tudo</span>, ele é apenas um <span className="text-primary font-bold">anjinho que confia em vocês</span>.
+          </p>
+          <div className="border-t border-border pt-4">
+            <p className="text-foreground text-base italic text-center">
+              ✨ Deus deu e porque vocês são <span className="text-primary font-bold">capazes</span>, pois <span className="text-primary font-bold">Deus é perfeito</span>...
+            </p>
+          </div>
+        </div>
       </section>
 
-      {/* CTA ENTRADA DE FUNIL */}
-      <section className="gradient-offer border border-primary/20 rounded-[22px] p-[26px] text-center shadow-offer my-9">
-        <p className="text-foreground text-[17px] leading-relaxed mb-4">
-          Deixa eu te mostrar que, com apenas <span className="text-primary font-bold">uma carta na manga</span>, você não vai precisar mais passar por isso sozinha.
+      {/* ═══════════════════════════════════════════════════════════
+          CTA ENTRADA DE FUNIL - A Solução
+      ═══════════════════════════════════════════════════════════ */}
+      <section className="gradient-offer border-2 border-primary/40 rounded-[22px] p-8 text-center shadow-offer my-10">
+        <div className="mb-6">
+          <span className="text-5xl">🃏</span>
+        </div>
+        
+        <p className="text-foreground text-xl leading-relaxed mb-4">
+          Deixa eu te mostrar que, com apenas
         </p>
         
-        <p className="text-primary text-xl font-extrabold mb-6">
-          Saiba que você é foda…
+        <div className="bg-primary/20 border-2 border-primary rounded-xl p-4 mb-6 inline-block">
+          <p className="text-primary text-2xl font-black uppercase tracking-wide">
+            UMA CARTA NA MANGA
+          </p>
+        </div>
+        
+        <p className="text-muted-foreground text-lg mb-6">
+          você <span className="text-foreground font-bold">não vai precisar mais</span> passar por isso <span className="text-primary font-bold">sozinha</span>.
+        </p>
+        
+        <div className="bg-gradient-to-r from-transparent via-primary/30 to-transparent h-px mb-6"></div>
+        
+        <p className="text-primary text-3xl font-black uppercase tracking-wide mb-8">
+          ✨ SAIBA QUE VOCÊ É FODA… ✨
         </p>
 
         <a
           href={CHECKOUT_URL}
-          className="block w-full gradient-primary py-4 rounded-[14px] font-extrabold text-primary-foreground text-base"
+          className="block w-full gradient-primary py-5 rounded-[14px] font-black text-primary-foreground text-lg uppercase tracking-wide shadow-glow"
         >
-          Quero Minha Carta na Manga Agora
+          🎯 Quero Minha Carta na Manga Agora
         </a>
       </section>
 
-      {/* OFERTA FINAL */}
-      <section id="offer" className="gradient-offer border border-primary/20 rounded-[22px] p-[26px] text-center shadow-offer">
-        <div className="bg-accent inline-block px-3.5 py-1.5 rounded-[20px] text-xs mb-3.5">
-          Fundadora Vitalícia
+      {/* ═══════════════════════════════════════════════════════════
+          OFERTA FINAL
+      ═══════════════════════════════════════════════════════════ */}
+      <section id="offer" className="gradient-offer border-2 border-primary/30 rounded-[22px] p-8 text-center shadow-offer">
+        <div className="bg-primary/30 border border-primary inline-block px-5 py-2 rounded-full text-sm font-bold uppercase tracking-wide mb-4">
+          👑 Fundadora Vitalícia
         </div>
 
-        <div className="text-muted-foreground line-through mb-1">De R$ 197</div>
-        <div className="text-[42px] font-black my-1.5">
-          R$ 49<small className="text-lg">,90</small>
+        <div className="text-muted-foreground line-through text-lg mb-1">De R$ 197</div>
+        <div className="text-5xl font-black my-3 tracking-tight">
+          R$ 49<small className="text-2xl">,90</small>
         </div>
 
-        <p className="text-[#ddd] text-sm mb-5">Pagamento único • Acesso vitalício</p>
+        <div className="inline-block bg-secondary border border-border rounded-full px-4 py-2 mb-6">
+          <p className="text-muted-foreground text-sm">
+            💳 Pagamento único • ♾️ Acesso vitalício
+          </p>
+        </div>
 
-        <ul className="text-left my-5 space-y-2.5">
-          <li className="text-sm before:content-['✔_'] before:text-primary">
-            Todas as atualizações futuras
+        <ul className="text-left space-y-3 mb-6">
+          <li className="flex items-center gap-3 bg-secondary/50 p-3 rounded-lg">
+            <span className="text-primary text-lg">✔</span>
+            <span className="text-foreground font-medium">Todas as atualizações futuras</span>
           </li>
-          <li className="text-sm before:content-['✔_'] before:text-primary">
-            Sem mensalidade
+          <li className="flex items-center gap-3 bg-secondary/50 p-3 rounded-lg">
+            <span className="text-primary text-lg">✔</span>
+            <span className="text-foreground font-medium">Sem mensalidade</span>
           </li>
-          <li className="text-sm before:content-['✔_'] before:text-primary">
-            Suporte em português
+          <li className="flex items-center gap-3 bg-secondary/50 p-3 rounded-lg">
+            <span className="text-primary text-lg">✔</span>
+            <span className="text-foreground font-medium">Suporte em português</span>
           </li>
         </ul>
 
         <a
           href={CHECKOUT_URL}
-          className="block w-full gradient-primary py-4 rounded-[14px] font-extrabold text-primary-foreground text-base mt-4 text-center"
+          className="block w-full gradient-primary py-5 rounded-[14px] font-black text-primary-foreground text-lg uppercase tracking-wide shadow-glow"
         >
-          Ser Fundadora MamãeZen Agora
+          👑 Ser Fundadora MamãeZen Agora
         </a>
+        
+        <p className="text-muted-foreground text-xs mt-4">
+          🔒 Compra 100% segura • Garantia de 7 dias
+        </p>
       </section>
     </div>
   );
