@@ -68,19 +68,31 @@ const Index = () => {
         {!videoStarted && (
           <div 
             onClick={handleStartVideo}
-            className="absolute inset-0 z-10 flex flex-col items-center justify-center cursor-pointer bg-background"
+            className="absolute inset-0 z-10 flex flex-col items-center justify-center cursor-pointer bg-background px-6"
           >
-            <div className="relative">
-              <div className="absolute inset-0 bg-primary/30 blur-3xl rounded-full animate-pulse"></div>
-              <div className="relative bg-primary/20 border-2 border-primary rounded-full p-8 mb-6 animate-pulse">
-                <span className="text-6xl">▶️</span>
+            {/* Título impactante */}
+            <h1 className="text-3xl md:text-5xl font-black text-center leading-tight mb-8">
+              <span className="text-primary">A CHANCE</span>{" "}
+              <span className="text-foreground">ESTÁ EM SUAS MÃOS</span>
+            </h1>
+            
+            {/* Botão de play */}
+            <div className="relative mb-8">
+              <div className="absolute inset-0 bg-primary/40 blur-3xl rounded-full animate-pulse scale-150"></div>
+              <div className="relative bg-gradient-to-br from-primary to-primary/70 border-4 border-primary-foreground/20 rounded-full p-10 shadow-glow">
+                <span className="text-7xl">▶️</span>
               </div>
             </div>
-            <p className="text-foreground text-2xl font-black uppercase tracking-wide mb-2">
-              Clique para Começar
+
+            {/* CTA */}
+            <p className="text-foreground text-xl md:text-2xl font-black uppercase tracking-wide mb-3 text-center">
+              🔥 Clique e Assista Agora
+            </p>
+            <p className="text-primary text-lg font-bold mb-4">
+              Te espero do outro lado...
             </p>
             <p className="text-muted-foreground text-sm">
-              🔊 Ative o som para melhor experiência
+              🔊 Ative o som para a experiência completa
             </p>
           </div>
         )}
