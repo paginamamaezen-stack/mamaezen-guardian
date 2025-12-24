@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import avatarProtector from "@/assets/avatar-protector.png";
 import avatarThinking from "@/assets/avatar-thinking.png";
 import avatarVictory from "@/assets/avatar-victory.png";
+import avatarWelcome from "@/assets/avatar-welcome.png";
 import heroIntroVideo from "@/assets/hero-intro-video.mp4";
 import heroVideo from "@/assets/hero-video.mp4";
 
@@ -71,25 +72,35 @@ const Index = () => {
             onClick={handleStartVideo}
             className="absolute inset-0 z-10 flex flex-col items-center justify-center cursor-pointer bg-background px-6"
           >
+            {/* Avatar da Especialista */}
+            <div className="relative mb-6">
+              <div className="absolute inset-0 bg-primary/30 blur-2xl rounded-full scale-125 animate-pulse"></div>
+              <img 
+                src={avatarWelcome} 
+                alt="Especialista em Maternidade" 
+                className="relative w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-primary shadow-glow object-cover"
+              />
+            </div>
+
             {/* Título impactante */}
-            <h1 className="text-3xl md:text-5xl font-black text-center leading-tight mb-8">
+            <h1 className="text-3xl md:text-5xl font-black text-center leading-tight mb-6">
               <span className="text-primary">A CHANCE</span>{" "}
               <span className="text-foreground">ESTÁ EM SUAS MÃOS</span>
             </h1>
             
             {/* Botão de play */}
-            <div className="relative mb-8">
+            <div className="relative mb-6">
               <div className="absolute inset-0 bg-primary/40 blur-3xl rounded-full animate-pulse scale-150"></div>
-              <div className="relative bg-gradient-to-br from-primary to-primary/70 border-4 border-primary-foreground/20 rounded-full p-10 shadow-glow">
-                <span className="text-7xl">▶️</span>
+              <div className="relative bg-gradient-to-br from-primary to-primary/70 border-4 border-primary-foreground/20 rounded-full p-8 shadow-glow">
+                <span className="text-5xl">▶️</span>
               </div>
             </div>
 
             {/* CTA */}
-            <p className="text-foreground text-xl md:text-2xl font-black uppercase tracking-wide mb-3 text-center">
+            <p className="text-foreground text-xl md:text-2xl font-black uppercase tracking-wide mb-2 text-center">
               🔥 Clique e Assista Agora
             </p>
-            <p className="text-primary text-lg font-bold mb-4">
+            <p className="text-primary text-lg font-bold mb-3">
               Te espero do outro lado...
             </p>
             <p className="text-muted-foreground text-sm">
