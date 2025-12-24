@@ -43,10 +43,18 @@ const Index = () => {
 
   const progress = ((quizStep + 1) / quizQuestions.length) * 100;
   const [videoEnded, setVideoEnded] = useState(false);
+  const [videoStarted, setVideoStarted] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const handleVideoEnd = () => {
     setVideoEnded(true);
+  };
+
+  const handleStartVideo = () => {
+    setVideoStarted(true);
+    if (videoRef.current) {
+      videoRef.current.play();
+    }
   };
 
   return (
@@ -55,22 +63,45 @@ const Index = () => {
           VÍDEO FULLSCREEN - Aparece primeiro
       ═══════════════════════════════════════════════════════════ */}
       <div className={`fixed inset-0 z-50 bg-background flex items-center justify-center transition-all duration-1000 ${videoEnded ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+        
+        {/* Tela inicial - Clique para começar */}
+        {!videoStarted && (
+          <div 
+            onClick={handleStartVideo}
+            className="absolute inset-0 z-10 flex flex-col items-center justify-center cursor-pointer bg-background"
+          >
+            <div className="relative">
+              <div className="absolute inset-0 bg-primary/30 blur-3xl rounded-full animate-pulse"></div>
+              <div className="relative bg-primary/20 border-2 border-primary rounded-full p-8 mb-6 animate-pulse">
+                <span className="text-6xl">▶️</span>
+              </div>
+            </div>
+            <p className="text-foreground text-2xl font-black uppercase tracking-wide mb-2">
+              Clique para Começar
+            </p>
+            <p className="text-muted-foreground text-sm">
+              🔊 Ative o som para melhor experiência
+            </p>
+          </div>
+        )}
+
         <video
           ref={videoRef}
           src={heroIntroVideo}
-          autoPlay
           playsInline
           onEnded={handleVideoEnd}
           className="w-full h-full object-cover"
         />
         
-        {/* Botão para pular vídeo */}
-        <button 
-          onClick={handleVideoEnd}
-          className="absolute bottom-8 right-8 bg-secondary/80 backdrop-blur-sm border border-border px-4 py-2 rounded-full text-sm text-muted-foreground hover:text-foreground hover:border-primary transition-all"
-        >
-          Pular vídeo →
-        </button>
+        {/* Botão para pular vídeo - só aparece após iniciar */}
+        {videoStarted && (
+          <button 
+            onClick={handleVideoEnd}
+            className="absolute bottom-8 right-8 bg-secondary/80 backdrop-blur-sm border border-border px-4 py-2 rounded-full text-sm text-muted-foreground hover:text-foreground hover:border-primary transition-all"
+          >
+            Pular vídeo →
+          </button>
+        )}
       </div>
 
       {/* ═══════════════════════════════════════════════════════════
