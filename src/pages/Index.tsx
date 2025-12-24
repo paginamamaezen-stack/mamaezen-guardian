@@ -3,6 +3,7 @@ import avatarProtector from "@/assets/avatar-protector.png";
 import avatarThinking from "@/assets/avatar-thinking.png";
 import avatarVictory from "@/assets/avatar-victory.png";
 import heroIntroVideo from "@/assets/hero-intro-video.mp4";
+import heroVideo from "@/assets/hero-video.mp4";
 
 const CHECKOUT_URL = "#";
 
@@ -135,6 +136,18 @@ const Index = () => {
         ═══════════════════════════════════════════════════════════ */}
         <section className="text-center mb-12">
 
+        {/* VÍDEO HERO */}
+        <div className="mb-6">
+          <video 
+            src={heroVideo} 
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full max-w-[320px] mx-auto rounded-2xl border-2 border-primary/30 shadow-glow"
+          />
+        </div>
+
         {/* HEADLINE - A pergunta impactante */}
         <h1 className="text-[28px] leading-[1.2] font-black mb-6 tracking-tight">
           A pergunta que não quer calar é se você teria{" "}
@@ -262,19 +275,19 @@ const Index = () => {
         {/* Lista com destaque visual */}
         <div className="space-y-4">
           <div className="flex items-start gap-3 bg-secondary/50 border-l-4 border-primary p-4 rounded-r-lg">
-            <span className="text-primary text-2xl font-black">&</span>
+            <span className="text-primary text-2xl">😢</span>
             <p className="text-foreground text-base font-medium">
               bebê <span className="text-primary font-bold">chorando toda hora</span>
             </p>
           </div>
           <div className="flex items-start gap-3 bg-secondary/50 border-l-4 border-primary p-4 rounded-r-lg">
-            <span className="text-primary text-2xl font-black">&</span>
+            <span className="text-primary text-2xl">💩</span>
             <p className="text-foreground text-base font-medium">
               bebê <span className="text-primary font-bold">mijando, fazendo cocô</span>
             </p>
           </div>
           <div className="flex items-start gap-3 bg-secondary/50 border-l-4 border-primary p-4 rounded-r-lg">
-            <span className="text-primary text-2xl font-black">&</span>
+            <span className="text-primary text-2xl">🏠</span>
             <p className="text-foreground text-base font-medium">
               casa pra arrumar, <span className="text-primary font-bold">roupa pra lavar</span>
             </p>
@@ -298,7 +311,7 @@ const Index = () => {
           {/* Consequência 1 - Descontar no marido */}
           <div className="bg-accent/30 border border-primary/20 rounded-xl p-5">
             <div className="flex items-start gap-3 mb-3">
-              <span className="text-primary text-2xl font-black">&</span>
+              <span className="text-primary text-2xl">💔</span>
               <h3 className="text-foreground text-lg font-bold">
                 Você descontando tudo no <span className="text-primary">marido pai do seu bebê</span>
               </h3>
@@ -322,7 +335,7 @@ const Index = () => {
           {/* Destaque - A Realidade */}
           <div className="bg-primary/20 border-2 border-primary rounded-xl p-4 text-center">
             <p className="text-primary text-xl font-black uppercase tracking-wide">
-              & A REALIDADE É OUTRA
+              ⚡ A REALIDADE É OUTRA
             </p>
           </div>
         </div>
@@ -334,7 +347,7 @@ const Index = () => {
       <section className="gradient-card border border-border rounded-[18px] p-6 my-9">
         {/* Header */}
         <div className="flex items-center gap-3 mb-5">
-          <span className="text-primary text-3xl font-black">&</span>
+          <span className="text-primary text-3xl">❄️</span>
           <h2 className="text-xl font-black text-foreground">
             Com isso começa a virar uma <span className="text-primary">BOLA DE NEVE</span>
           </h2>
