@@ -83,10 +83,23 @@ const Index = () => {
             </div>
 
             {/* Título impactante */}
-            <h1 className="text-3xl md:text-5xl font-black text-center leading-tight mb-6">
+            <h1 className="text-3xl md:text-5xl font-black text-center leading-tight mb-4">
               <span className="text-primary">A CHANCE</span>{" "}
               <span className="text-foreground">ESTÁ EM SUAS MÃOS</span>
             </h1>
+            
+            {/* Subtítulo poderoso */}
+            <div className="text-center mb-6 px-4">
+              <p className="text-muted-foreground text-base md:text-lg font-medium mb-1">
+                Esse conteúdo <span className="text-primary font-black">NÃO</span> é para mães mimadas
+              </p>
+              <p className="text-foreground text-lg md:text-xl font-bold">
+                Esse conteúdo é para <span className="text-primary font-black uppercase">MÃES ÁGUIAS</span>
+              </p>
+              <p className="text-foreground text-lg md:text-xl font-bold">
+                🦅 que protegem o seu filhote
+              </p>
+            </div>
             
             {/* Botão de play */}
             <div className="relative mb-6">
