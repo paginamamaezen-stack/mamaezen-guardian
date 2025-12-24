@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import avatarProtector from "@/assets/avatar-protector.png";
 import avatarThinking from "@/assets/avatar-thinking.png";
 import avatarVictory from "@/assets/avatar-victory.png";
-import heroVideo from "@/assets/hero-video.mp4";
+import heroIntroVideo from "@/assets/hero-intro-video.mp4";
 
 const CHECKOUT_URL = "#";
 
@@ -42,33 +42,56 @@ const Index = () => {
   };
 
   const progress = ((quizStep + 1) / quizQuestions.length) * 100;
+  const [videoEnded, setVideoEnded] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const handleVideoEnd = () => {
+    setVideoEnded(true);
+  };
 
   return (
-    <div className="container py-6 pb-20">
-      {/* TOPO */}
-      <div className="flex justify-between items-center mb-6">
-        <div className="bg-secondary border border-border px-3.5 py-1.5 rounded-[20px] text-xs text-muted-foreground">
-          🔥 Oferta ativa
-        </div>
-        <div className="bg-secondary border border-border px-3.5 py-1.5 rounded-[20px] text-xs text-muted-foreground">
-          👁️ 5 mães agora
-        </div>
+    <div className="min-h-screen">
+      {/* ═══════════════════════════════════════════════════════════
+          VÍDEO FULLSCREEN - Aparece primeiro
+      ═══════════════════════════════════════════════════════════ */}
+      <div className={`fixed inset-0 z-50 bg-background flex items-center justify-center transition-all duration-1000 ${videoEnded ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+        <video
+          ref={videoRef}
+          src={heroIntroVideo}
+          autoPlay
+          muted
+          playsInline
+          onEnded={handleVideoEnd}
+          className="w-full h-full object-cover"
+        />
+        
+        {/* Botão para pular vídeo */}
+        <button 
+          onClick={handleVideoEnd}
+          className="absolute bottom-8 right-8 bg-secondary/80 backdrop-blur-sm border border-border px-4 py-2 rounded-full text-sm text-muted-foreground hover:text-foreground hover:border-primary transition-all"
+        >
+          Pular vídeo →
+        </button>
       </div>
 
       {/* ═══════════════════════════════════════════════════════════
-          HERO SECTION - HEADLINE PRINCIPAL
+          CONTEÚDO DA PÁGINA - Aparece após vídeo
       ═══════════════════════════════════════════════════════════ */}
-      <section className="text-center mb-12">
-        <div className="rounded-[18px] overflow-hidden mb-8 border-2 border-primary/30 shadow-glow">
-          <video
-            src={heroVideo}
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-auto"
-          />
+      <div className={`container py-6 pb-20 transition-all duration-1000 ${videoEnded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+        {/* TOPO */}
+        <div className="flex justify-between items-center mb-6">
+          <div className="bg-secondary border border-border px-3.5 py-1.5 rounded-[20px] text-xs text-muted-foreground">
+            🔥 Oferta ativa
+          </div>
+          <div className="bg-secondary border border-border px-3.5 py-1.5 rounded-[20px] text-xs text-muted-foreground">
+            👁️ 5 mães agora
+          </div>
         </div>
+
+        {/* ═══════════════════════════════════════════════════════════
+            HERO SECTION - HEADLINE PRINCIPAL
+        ═══════════════════════════════════════════════════════════ */}
+        <section className="text-center mb-12">
 
         {/* HEADLINE - A pergunta impactante */}
         <h1 className="text-[28px] leading-[1.2] font-black mb-6 tracking-tight">
@@ -450,10 +473,11 @@ const Index = () => {
           👑 Ser Fundadora MamãeZen Agora
         </a>
         
-        <p className="text-muted-foreground text-xs mt-4">
-          🔒 Compra 100% segura • Garantia de 7 dias
-        </p>
-      </section>
+          <p className="text-muted-foreground text-xs mt-4">
+            🔒 Compra 100% segura • Garantia de 7 dias
+          </p>
+        </section>
+      </div>
     </div>
   );
 };
