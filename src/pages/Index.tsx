@@ -59,7 +59,6 @@ const Index = () => {
           ref={videoRef}
           src={heroIntroVideo}
           autoPlay
-          muted
           playsInline
           onEnded={handleVideoEnd}
           className="w-full h-full object-cover"
