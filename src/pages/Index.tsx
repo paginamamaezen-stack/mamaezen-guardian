@@ -430,17 +430,49 @@ const Index = () => {
                 </a>
               </>
             ) : (
+              // TELA DE RECONSIDERAÇÃO - História de Petrópolis
               <>
-                <div className="relative mb-6">
-                  <img src={avatarWelcome} alt="Tudo bem" className="w-24 h-24 mx-auto object-contain" />
+                <div className="relative mb-4">
+                  <div className="absolute inset-0 bg-red-500/20 blur-2xl rounded-full"></div>
+                  <img src={avatarProtector} alt="Alerta" className="relative w-24 h-24 mx-auto object-contain" />
                 </div>
-                <h2 className="text-xl font-black mb-3 text-foreground">Tudo bem! 😊</h2>
-                <p className="text-muted-foreground text-sm mb-4">
-                  Que bom que você tem apoio! Mas lembre-se: <span className="text-foreground font-semibold">conhecimento nunca é demais</span>.
-                </p>
-                <p className="text-muted-foreground text-sm mb-5">
-                  Se mudar de ideia, estarei aqui para te ajudar a se tornar uma <span className="text-primary font-bold">Mãe Águia</span>!
-                </p>
+                
+                <div className="bg-red-500/10 border-2 border-red-500/50 rounded-xl p-4 mb-5">
+                  <h2 className="text-xl font-black mb-3 text-red-400">⚠️ ANTES DE IR...</h2>
+                  <p className="text-foreground text-sm leading-relaxed mb-3">
+                    No <span className="font-bold text-primary">Rio de Janeiro, em Petrópolis</span>, aconteceu uma tragédia que chocou milhares de famílias, na qual uma bebê de cerca de <span className="text-red-400 font-bold">um ano e três meses engasgou com uma fatia de maçã</span>.
+                  </p>
+                  <p className="text-foreground text-sm leading-relaxed mb-3">
+                    Uma creche <span className="font-bold">despreparada</span>, com funcionários que <span className="text-red-400 font-bold">não sabiam as técnicas</span> que eu irei te ensinar no nosso kit vitalício, não souberam agir. Os educadores tentaram socorrer, mas levaram cerca de <span className="text-red-400 font-bold">11 minutos até chegar atendimento médico</span>.
+                  </p>
+                  <p className="text-foreground text-sm leading-relaxed mb-3">
+                    A polícia concluiu que houve <span className="text-red-400 font-bold">negligência no atendimento</span> ou ausência de preparo técnico. Elas não tiveram os ensinamentos de uma <span className="text-primary font-bold">MÃE ÁGUIA</span>, que eu estou te oferecendo hoje.
+                  </p>
+                  <p className="text-foreground text-sm leading-relaxed font-bold">
+                    A menina foi levada para a UPA, reanimada, entubada, transferida para o hospital... mas <span className="text-red-400">infelizmente não resistiu e faleceu</span>. 💔
+                  </p>
+                </div>
+
+                <div className="bg-primary/20 border border-primary/40 rounded-xl p-4 mb-5">
+                  <p className="text-foreground text-lg font-bold text-center mb-2">
+                    Se essa situação fosse com <span className="text-primary">VOCÊ</span>, o que você faria?
+                  </p>
+                  <p className="text-muted-foreground text-sm text-center mb-3">
+                    Você estaria preparada ou simplesmente ligaria para o SAMU que demoraria horas para chegar?
+                  </p>
+                  <p className="text-primary text-base font-black text-center">
+                    🦅 Ou aceitaria esse treinamento do Kit Vitalício e se tornaria uma MÃE ÁGUIA que protege o seu filhote?
+                  </p>
+                </div>
+
+                <a
+                  href={CHECKOUT_URL}
+                  onClick={handleCheckoutClick}
+                  className="block w-full gradient-primary text-primary-foreground py-4 rounded-[14px] font-black text-base uppercase shadow-glow mb-3"
+                >
+                  🛡️ Quero Me Preparar Agora
+                </a>
+                
                 <button
                   onClick={() => {
                     setQuizCompleted(false);
