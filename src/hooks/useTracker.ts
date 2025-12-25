@@ -9,6 +9,12 @@ type TrackingEvent =
   | 'quiz_start'
   | 'quiz_answer'
   | 'quiz_complete'
+  | 'quiz_exit'
+  | 'quiz_doubt'
+  | 'quiz_advance'
+  | 'quiz_success'
+  | 'quiz_retry'
+  | 'content_unlocked'
   | 'cta_click'
   | 'checkout_click'
   | 'scroll_depth';
