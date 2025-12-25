@@ -66,12 +66,21 @@ export const useTracker = () => {
     trackEvent('cta_click', { buttonName, destination });
   }, [trackEvent]);
 
-  // Rastrear checkout
+  // Rastrear checkout com conversão do Google Ads
   const trackCheckout = useCallback(() => {
     trackEvent('checkout_click', { 
       value: 49.90,
       currency: 'BRL'
     });
+    
+    // Google Ads Conversion tracking
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'conversion', {
+        'send_to': 'AW-17714282754/GNrRCK7D58kbEIKC6v5B',
+        'value': 49.90,
+        'currency': 'BRL'
+      });
+    }
   }, [trackEvent]);
 
   // Rastrear quiz

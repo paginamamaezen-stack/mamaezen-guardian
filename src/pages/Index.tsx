@@ -7,7 +7,7 @@ import heroIntroVideo from "@/assets/hero-intro-video.mp4";
 import heroVideo from "@/assets/hero-video.mp4";
 import { useTracker } from "@/hooks/useTracker";
 
-const CHECKOUT_URL = "https://payfast.greenn.com.br/151336";
+const CHECKOUT_URL = "https://pay.cakto.com.br/c88zju2_683076";
 
 // Quiz com as perguntas fornecidas
 const quizQuestions = [
