@@ -1,8 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import avatarEagleMother from "@/assets/avatar-eagle-mother.png";
-import avatarEagleAlert from "@/assets/avatar-eagle-alert.png";
-import avatarEagleVictory from "@/assets/avatar-eagle-victory.png";
-import avatarEagleThinking from "@/assets/avatar-eagle-thinking.png";
+import avatarMaeAguia from "@/assets/avatar-mae-aguia.png";
 import heroIntroVideo from "@/assets/hero-intro-video.mp4";
 import heroVideo from "@/assets/hero-video.mp4";
 import { useTracker } from "@/hooks/useTracker";
@@ -13,62 +10,52 @@ const CHECKOUT_URL = "https://pay.cakto.com.br/c88zju2_683076";
 const quizQuestions = [
   {
     id: 1,
-    avatar: avatarEagleAlert,
     intro: "A cada 15 segundos uma mulher está sofrendo sem saber colocar seu bebê para arrotar",
     warning: "3 coisas podem acontecer: Engasgo, Desengasgo ou a morte",
-    question: "VOCÊ ESTÁ PREPARADA PARA ESSA SITUAÇÃO? ISSO NÃO É ENSINADO NA MATERNIDADE",
+    question: "VOCÊ ESTÁ PREPARADA PARA ESSA SITUAÇÃO?",
     options: [
       { 
-        text: "Não sei me virar, mais tenho minha mamãe. Sou mimadinha, esse conteúdo não é pra mim", 
-        emoji: "😅", 
+        text: "Não sei me virar, tenho minha mamãe. Esse conteúdo não é pra mim", 
         type: "exit" 
       },
       { 
-        text: "EU ATÉ SEI, MAIS QUANTO MAIS CONHECIMENTO MELHOR. SOU UMA MÃE ÁGUIA E QUERO PROTEGER O MEU FILHOTE", 
-        emoji: "🦅", 
+        text: "QUERO PROTEGER MEU FILHOTE! SOU UMA MÃE ÁGUIA", 
         type: "advance" 
       },
     ],
   },
   {
     id: 2,
-    avatar: avatarEagleMother,
-    intro: "Esteja preparada para qualquer tipo de situação",
-    warning: "Nosso Kit não é de qualquer um. Eu entendo a sua dor. A maioria das vezes essa tristeza vem de mães adolescentes que ainda nem descobriram o que é ser mãe...",
-    question: "Mais com o nosso kit você vai se tornar uma MÃE ÁGUIA que protege o seu filhote",
+    intro: "Nosso Kit não é de qualquer um. Eu entendo a sua dor...",
+    warning: "A maioria das vezes essa tristeza vem de mães que ainda não descobriram o que é ser mãe...",
+    question: "Com nosso kit você vai se tornar uma MÃE ÁGUIA",
     options: [
       { 
-        text: "ESSE KIT NÃO É PRA MIM. TENHO MINHA MAMÃE PRA ME AJUDAR. EU SOU MOLE", 
-        emoji: "🤷", 
+        text: "Esse kit não é pra mim. Tenho minha mamãe pra me ajudar", 
         type: "exit" 
       },
       { 
-        text: "EU QUERO MUITO ESSE KIT POIS SOU UMA MÃE RESPONSÁVEL, UMA MÃE ÁGUIA", 
-        emoji: "🦅", 
+        text: "EU QUERO ESSE KIT! SOU UMA MÃE RESPONSÁVEL", 
         type: "advance" 
       },
       { 
-        text: "EU ESTOU EM DÚVIDAS POIS NÃO TENHO DINHEIRO, MAIS SE EU TIVESSE COMPRARIA", 
-        emoji: "💭", 
+        text: "Estou em dúvida por causa do dinheiro...", 
         type: "doubt" 
       },
     ],
   },
   {
     id: 3,
-    avatar: avatarEagleThinking,
     intro: "Última pergunta antes de liberar o conteúdo exclusivo",
     warning: "Milhares de mães já transformaram suas vidas com esse conhecimento...",
-    question: "VOCÊ ESTÁ PRONTA PARA DAR O PRÓXIMO PASSO E SE TORNAR UMA MÃE ÁGUIA?",
+    question: "VOCÊ ESTÁ PRONTA PARA SE TORNAR UMA MÃE ÁGUIA?",
     options: [
       { 
         text: "Não, prefiro continuar na mesma situação", 
-        emoji: "😔", 
         type: "exit" 
       },
       { 
-        text: "SIM! ESTOU PRONTA PARA PROTEGER MEU FILHOTE COM TODO CONHECIMENTO NECESSÁRIO", 
-        emoji: "🦅", 
+        text: "SIM! QUERO ME PREPARAR AGORA", 
         type: "advance" 
       },
     ],
@@ -76,7 +63,17 @@ const quizQuestions = [
 ];
 
 const Index = () => {
-  const { trackVideoStart, trackVideoEnd, trackVideoSkip, trackQuizStart, trackQuizAnswer, trackQuizComplete, trackCheckout } = useTracker();
+  const { 
+    trackEvent, 
+    trackVideoStart, 
+    trackVideoEnd, 
+    trackVideoSkip, 
+    trackQuizStart, 
+    trackQuizAnswer, 
+    trackQuizComplete, 
+    trackCheckout,
+    trackCTAClick 
+  } = useTracker();
   
   const [quizStep, setQuizStep] = useState(0);
   const [quizStarted, setQuizStarted] = useState(false);
@@ -84,6 +81,14 @@ const Index = () => {
   const [quizResult, setQuizResult] = useState<'eagle' | 'exit' | 'doubt' | null>(null);
   const [showFullContent, setShowFullContent] = useState(false);
   const [viewerCount, setViewerCount] = useState(7);
+  const [videoEnded, setVideoEnded] = useState(false);
+  const [videoStarted, setVideoStarted] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Track page view
+  useEffect(() => {
+    trackEvent('page_view', { page: 'landing' });
+  }, []);
 
   // Contador de visualizações dinâmico
   useEffect(() => {
@@ -101,27 +106,33 @@ const Index = () => {
   const handleStartQuiz = () => {
     setQuizStarted(true);
     trackQuizStart();
+    trackCTAClick('quiz_start_button', 'quiz');
   };
 
   const handleAnswer = (optionType: string, answerText: string) => {
     trackQuizAnswer(quizStep + 1, answerText);
+    trackCTAClick(`quiz_option_${optionType}`, optionType);
 
     if (optionType === 'exit') {
       setQuizResult('exit');
       setQuizCompleted(true);
       trackQuizComplete('exit');
+      trackEvent('quiz_exit', { step: quizStep + 1, reason: 'user_exit' });
     } else if (optionType === 'doubt') {
       setQuizResult('doubt');
       setQuizCompleted(true);
       trackQuizComplete('doubt');
+      trackEvent('quiz_doubt', { step: quizStep + 1 });
     } else if (optionType === 'advance') {
       if (quizStep < quizQuestions.length - 1) {
         setQuizStep(prev => prev + 1);
+        trackEvent('quiz_advance', { from_step: quizStep + 1, to_step: quizStep + 2 });
       } else {
         setQuizResult('eagle');
         setQuizCompleted(true);
         setShowFullContent(true);
         trackQuizComplete('eagle');
+        trackEvent('quiz_success', { completed_all_steps: true });
         setTimeout(() => {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }, 500);
@@ -130,9 +141,6 @@ const Index = () => {
   };
 
   const progress = ((quizStep + 1) / quizQuestions.length) * 100;
-  const [videoEnded, setVideoEnded] = useState(false);
-  const [videoStarted, setVideoStarted] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
 
   const handleVideoEnd = () => {
     setVideoEnded(true);
@@ -143,6 +151,7 @@ const Index = () => {
   const handleStartVideo = () => {
     setVideoStarted(true);
     trackVideoStart();
+    trackCTAClick('video_start_button', 'video');
     if (videoRef.current) {
       videoRef.current.play();
     }
@@ -151,11 +160,22 @@ const Index = () => {
   const handleSkipVideo = () => {
     setVideoEnded(true);
     trackVideoSkip();
+    trackCTAClick('video_skip_button', 'quiz');
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
   const handleCheckoutClick = () => {
     trackCheckout();
+    trackCTAClick('checkout_button', CHECKOUT_URL);
+  };
+
+  const handleShowContent = () => {
+    setShowFullContent(true);
+    trackCTAClick('show_content_button', 'full_content');
+    trackEvent('content_unlocked', { method: 'reconsideration' });
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
   };
 
   const resetQuiz = () => {
@@ -163,6 +183,8 @@ const Index = () => {
     setQuizStarted(false);
     setQuizStep(0);
     setQuizResult(null);
+    trackCTAClick('quiz_retry_button', 'quiz');
+    trackEvent('quiz_retry', { previous_result: quizResult });
   };
 
   return (
@@ -182,7 +204,7 @@ const Index = () => {
             <div className="relative mb-6">
               <div className="absolute inset-0 bg-primary/30 blur-2xl rounded-full scale-125 animate-pulse"></div>
               <img 
-                src={avatarEagleMother} 
+                src={avatarMaeAguia} 
                 alt="Mãe Águia" 
                 className="relative w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-primary shadow-glow object-cover"
               />
@@ -273,7 +295,7 @@ const Index = () => {
                   <div className="text-center">
                     <div className="relative mb-6">
                       <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full"></div>
-                      <img src={avatarEagleAlert} alt="Quiz" className="relative w-28 h-28 mx-auto object-contain" />
+                      <img src={avatarMaeAguia} alt="Mãe Águia" className="relative w-32 h-32 mx-auto rounded-full border-4 border-primary/50 object-cover" />
                     </div>
                     
                     <div className="inline-flex items-center gap-2 bg-primary/20 border border-primary/30 rounded-full px-4 py-2 mb-4">
@@ -298,7 +320,7 @@ const Index = () => {
                     
                     <button
                       onClick={handleStartQuiz}
-                      className="w-full gradient-primary text-primary-foreground py-4 rounded-[14px] font-black text-base uppercase tracking-wide shadow-glow"
+                      className="w-full gradient-primary text-primary-foreground py-4 rounded-[14px] font-black text-base uppercase tracking-wide shadow-glow hover:scale-[1.02] transition-transform"
                     >
                       🦅 Descobrir se sou uma Mãe Águia
                     </button>
@@ -326,9 +348,9 @@ const Index = () => {
                     <div className="relative mb-6">
                       <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full"></div>
                       <img 
-                        src={quizQuestions[quizStep].avatar} 
-                        alt="Quiz" 
-                        className="relative w-24 h-24 mx-auto object-contain" 
+                        src={avatarMaeAguia} 
+                        alt="Mãe Águia" 
+                        className="relative w-24 h-24 mx-auto rounded-full border-3 border-primary/50 object-cover" 
                       />
                     </div>
 
@@ -346,21 +368,21 @@ const Index = () => {
                       {quizQuestions[quizStep].question}
                     </h3>
 
+                    {/* BOTÕES DO QUIZ - Estilo claro de botão */}
                     <div className="flex flex-col gap-3">
                       {quizQuestions[quizStep].options.map((option, idx) => (
                         <button
                           key={idx}
                           onClick={() => handleAnswer(option.type, option.text)}
-                          className={`w-full p-4 rounded-[12px] text-left transition-all duration-300 flex items-start gap-3 ${
+                          className={`w-full p-4 rounded-xl text-center transition-all duration-300 font-bold text-sm border-2 hover:scale-[1.02] active:scale-[0.98] ${
                             option.type === 'advance' 
-                              ? 'bg-primary/20 border-2 border-primary hover:bg-primary/30' 
-                              : 'bg-secondary border border-border hover:border-primary/50'
+                              ? 'bg-primary text-primary-foreground border-primary shadow-glow hover:bg-primary/90' 
+                              : option.type === 'doubt'
+                              ? 'bg-secondary text-foreground border-border hover:border-primary/50 hover:bg-secondary/80'
+                              : 'bg-secondary/50 text-muted-foreground border-border/50 hover:border-border hover:text-foreground'
                           }`}
                         >
-                          <span className="text-2xl flex-shrink-0">{option.emoji}</span>
-                          <span className={`text-sm font-medium ${option.type === 'advance' ? 'text-foreground font-bold' : 'text-muted-foreground'}`}>
-                            {option.text}
-                          </span>
+                          {option.text}
                         </button>
                       ))}
                     </div>
@@ -372,7 +394,7 @@ const Index = () => {
                       <>
                         <div className="relative mb-6">
                           <div className="absolute inset-0 bg-primary/30 blur-2xl rounded-full animate-pulse"></div>
-                          <img src={avatarEagleVictory} alt="Parabéns" className="relative w-28 h-28 mx-auto object-contain" />
+                          <img src={avatarMaeAguia} alt="Parabéns" className="relative w-28 h-28 mx-auto rounded-full border-4 border-primary object-cover" />
                         </div>
                         <div className="text-6xl mb-4">🦅</div>
                         <h2 className="text-2xl font-black mb-2 text-primary">VOCÊ É UMA MÃE ÁGUIA!</h2>
@@ -387,9 +409,10 @@ const Index = () => {
                         </div>
                       </>
                     ) : quizResult === 'doubt' ? (
+                      // DÚVIDA - Botão leva ao conteúdo
                       <>
                         <div className="relative mb-6">
-                          <img src={avatarEagleThinking} alt="Entendo" className="w-24 h-24 mx-auto object-contain" />
+                          <img src={avatarMaeAguia} alt="Entendo" className="w-24 h-24 mx-auto rounded-full border-3 border-primary/50 object-cover" />
                         </div>
                         <h2 className="text-xl font-black mb-3 text-foreground">Eu entendo você... 💭</h2>
                         <p className="text-muted-foreground text-sm mb-4">
@@ -400,20 +423,19 @@ const Index = () => {
                             Por apenas <span className="text-primary font-black text-xl">R$ 49,90</span> você terá conhecimento para <span className="font-bold">proteger seu filhote para sempre</span>.
                           </p>
                         </div>
-                        <a
-                          href={CHECKOUT_URL}
-                          onClick={handleCheckoutClick}
-                          className="block w-full gradient-primary text-primary-foreground py-4 rounded-[14px] font-black text-base uppercase shadow-glow"
+                        <button
+                          onClick={handleShowContent}
+                          className="block w-full gradient-primary text-primary-foreground py-4 rounded-[14px] font-black text-base uppercase shadow-glow hover:scale-[1.02] transition-transform"
                         >
-                          🦅 Quero Ser Uma Mãe Águia
-                        </a>
+                          🦅 Quero Me Preparar Agora
+                        </button>
                       </>
                     ) : (
-                      // TELA DE RECONSIDERAÇÃO PROFISSIONAL
+                      // TELA DE RECONSIDERAÇÃO - Botão leva ao conteúdo
                       <ReconsiderationScreen 
-                        onCheckout={handleCheckoutClick} 
+                        onShowContent={handleShowContent}
                         onRetry={resetQuiz}
-                        checkoutUrl={CHECKOUT_URL}
+                        avatarSrc={avatarMaeAguia}
                       />
                     )}
                   </div>
@@ -478,14 +500,6 @@ const Index = () => {
                   Você só não teve os <span className="text-foreground font-bold">ensinamentos de alguém</span> com experiência própria.
                 </p>
               </div>
-
-              <a
-                href={CHECKOUT_URL}
-                onClick={handleCheckoutClick}
-                className="block w-full gradient-primary text-primary-foreground py-5 text-lg font-black rounded-[14px] shadow-glow text-center uppercase tracking-wide"
-              >
-                🛡️ Quero Proteger Meu Bebê Agora
-              </a>
             </section>
 
             {/* ROTINAS DIÁRIAS */}
@@ -606,9 +620,9 @@ const Index = () => {
               <div className="relative">
                 <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full"></div>
                 <img 
-                  src={avatarEagleMother} 
+                  src={avatarMaeAguia} 
                   alt="Mãe Águia - Proteção" 
-                  className="relative w-52 h-52 object-contain drop-shadow-[0_0_30px_hsl(357_95%_47%_/_0.5)]"
+                  className="relative w-52 h-52 rounded-full border-4 border-primary object-cover drop-shadow-[0_0_30px_hsl(357_95%_47%_/_0.5)]"
                 />
               </div>
             </div>
@@ -686,17 +700,9 @@ const Index = () => {
               <p className="text-primary text-3xl font-black uppercase tracking-wide mb-8">
                 ✨ SAIBA QUE VOCÊ É FODA… ✨
               </p>
-
-              <a
-                href={CHECKOUT_URL}
-                onClick={handleCheckoutClick}
-                className="block w-full gradient-primary py-5 rounded-[14px] font-black text-primary-foreground text-lg uppercase tracking-wide shadow-glow"
-              >
-                🎯 Quero Minha Carta na Manga Agora
-              </a>
             </section>
 
-            {/* OFERTA FINAL */}
+            {/* OFERTA FINAL - ÚNICO BOTÃO DE CHECKOUT */}
             <section id="offer" className="gradient-offer border-2 border-primary/30 rounded-[22px] p-8 text-center shadow-offer">
               <div className="bg-primary/30 border border-primary inline-block px-5 py-2 rounded-full text-sm font-bold uppercase tracking-wide mb-4">
                 👑 Fundadora Vitalícia
@@ -731,7 +737,7 @@ const Index = () => {
               <a
                 href={CHECKOUT_URL}
                 onClick={handleCheckoutClick}
-                className="block w-full gradient-primary py-5 rounded-[14px] font-black text-primary-foreground text-lg uppercase tracking-wide shadow-glow"
+                className="block w-full gradient-primary py-5 rounded-[14px] font-black text-primary-foreground text-lg uppercase tracking-wide shadow-glow hover:scale-[1.02] transition-transform"
               >
                 👑 Ser Fundadora MamãeZen Agora
               </a>
@@ -747,21 +753,21 @@ const Index = () => {
   );
 };
 
-// Componente de Reconsideração Profissional
+// Componente de Reconsideração - Botão leva ao conteúdo, não checkout
 interface ReconsiderationScreenProps {
-  onCheckout: () => void;
+  onShowContent: () => void;
   onRetry: () => void;
-  checkoutUrl: string;
+  avatarSrc: string;
 }
 
-const ReconsiderationScreen = ({ onCheckout, onRetry, checkoutUrl }: ReconsiderationScreenProps) => {
+const ReconsiderationScreen = ({ onShowContent, onRetry, avatarSrc }: ReconsiderationScreenProps) => {
   return (
     <div className="text-left">
       {/* Header */}
       <div className="flex items-center justify-center mb-6">
         <div className="relative">
           <div className="absolute inset-0 bg-red-500/20 blur-2xl rounded-full"></div>
-          <img src={avatarEagleAlert} alt="Alerta" className="relative w-20 h-20 object-contain" />
+          <img src={avatarSrc} alt="Mãe Águia" className="relative w-24 h-24 rounded-full border-3 border-primary/50 object-cover" />
         </div>
       </div>
       
@@ -828,14 +834,13 @@ const ReconsiderationScreen = ({ onCheckout, onRetry, checkoutUrl }: Reconsidera
         </p>
       </div>
 
-      {/* Botões */}
-      <a
-        href={checkoutUrl}
-        onClick={onCheckout}
-        className="block w-full gradient-primary text-primary-foreground py-4 rounded-[14px] font-black text-base uppercase shadow-glow text-center mb-3"
+      {/* Botões - Principal leva ao conteúdo */}
+      <button
+        onClick={onShowContent}
+        className="block w-full gradient-primary text-primary-foreground py-4 rounded-[14px] font-black text-base uppercase shadow-glow text-center mb-3 hover:scale-[1.02] transition-transform"
       >
         🛡️ Quero Me Preparar Agora
-      </a>
+      </button>
       
       <button
         onClick={onRetry}
