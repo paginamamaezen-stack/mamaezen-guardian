@@ -1,45 +1,111 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import avatarProtector from "@/assets/avatar-protector.png";
 import avatarThinking from "@/assets/avatar-thinking.png";
 import avatarVictory from "@/assets/avatar-victory.png";
 import avatarWelcome from "@/assets/avatar-welcome.png";
 import heroIntroVideo from "@/assets/hero-intro-video.mp4";
 import heroVideo from "@/assets/hero-video.mp4";
+import { useTracker } from "@/hooks/useTracker";
 
-const CHECKOUT_URL = "#";
+const CHECKOUT_URL = "https://payfast.greenn.com.br/151336";
 
+// Quiz com as perguntas fornecidas
 const quizQuestions = [
   {
-    question: "Você sente que está sempre cansada e sem energia?",
-    options: ["Sim, todos os dias", "Às vezes", "Raramente"]
+    id: 1,
+    avatar: avatarThinking,
+    intro: "A cada 15 segundos uma mulher está sofrendo sem saber colocar seu bebê para arrotar",
+    warning: "3 coisas podem acontecer: Engasgo, Desengasgo ou a morte",
+    question: "VOCÊ ESTÁ PREPARADA PARA ESSA SITUAÇÃO? ISSO NÃO É ENSINADO NA MATERNIDADE",
+    options: [
+      { 
+        text: "Não sei me virar, mais tenho minha mamãe. Sou mimadinha, esse conteúdo não é pra mim", 
+        emoji: "😅", 
+        type: "exit" 
+      },
+      { 
+        text: "EU ATÉ SEI, MAIS QUANTO MAIS CONHECIMENTO MELHOR. SOU UMA MÃE ÁGUIA E QUERO PROTEGER O MEU FILHOTE", 
+        emoji: "🦅", 
+        type: "advance" 
+      },
+    ],
   },
   {
-    question: "Você tem medo de estar fazendo algo errado com seu bebê?",
-    options: ["Sim, constantemente", "De vez em quando", "Não muito"]
+    id: 2,
+    avatar: avatarProtector,
+    intro: "Esteja preparada para qualquer tipo de situação",
+    warning: "Nosso Kit não é de qualquer um. Eu entendo a sua dor. A maioria das vezes essa tristeza vem de mães adolescentes que ainda nem descobriram o que é ser mãe...",
+    question: "Mais com o nosso kit você vai se tornar uma MÃE ÁGUIA que protege o seu filhote",
+    options: [
+      { 
+        text: "ESSE KIT NÃO É PRA MIM. TENHO MINHA MAMÃE PRA ME AJUDAR. EU SOU MOLE", 
+        emoji: "🤷", 
+        type: "exit" 
+      },
+      { 
+        text: "EU QUERO MUITO ESSE KIT POIS SOU UMA MÃE RESPONSÁVEL, UMA MÃE ÁGUIA", 
+        emoji: "🦅", 
+        type: "advance" 
+      },
+      { 
+        text: "EU ESTOU EM DÚVIDAS POIS NÃO TENHO DINHEIRO, MAIS SE EU TIVESSE COMPRARIA", 
+        emoji: "💭", 
+        type: "doubt" 
+      },
+    ],
   },
-  {
-    question: "Você gostaria de ter um guia prático para cada situação?",
-    options: ["Com certeza!", "Seria útil", "Talvez"]
-  }
 ];
 
 const Index = () => {
+  const { trackVideoStart, trackVideoEnd, trackVideoSkip, trackQuizStart, trackQuizAnswer, trackQuizComplete, trackCheckout } = useTracker();
+  
   const [quizStep, setQuizStep] = useState(0);
   const [quizStarted, setQuizStarted] = useState(false);
   const [quizCompleted, setQuizCompleted] = useState(false);
-  const [score, setScore] = useState(0);
+  const [quizResult, setQuizResult] = useState<'eagle' | 'exit' | 'doubt' | null>(null);
+  const [viewerCount, setViewerCount] = useState(7);
 
-  const handleAnswer = (answerIndex: number) => {
-    const points = answerIndex === 0 ? 3 : answerIndex === 1 ? 2 : 1;
-    setScore(prev => prev + points);
+  // Contador de visualizações dinâmico
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setViewerCount(prev => {
+        const change = Math.random() > 0.5 ? 1 : -1;
+        const newCount = prev + change;
+        // Mantém entre 3 e 15
+        return Math.max(3, Math.min(15, newCount));
+      });
+    }, 3000 + Math.random() * 4000); // Varia entre 3-7 segundos
 
-    if (quizStep < quizQuestions.length - 1) {
-      setQuizStep(prev => prev + 1);
-    } else {
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleStartQuiz = () => {
+    setQuizStarted(true);
+    trackQuizStart();
+  };
+
+  const handleAnswer = (optionType: string, answerText: string) => {
+    trackQuizAnswer(quizStep + 1, answerText);
+
+    if (optionType === 'exit') {
+      setQuizResult('exit');
       setQuizCompleted(true);
-      setTimeout(() => {
-        document.getElementById("offer")?.scrollIntoView({ behavior: "smooth" });
-      }, 500);
+      trackQuizComplete('exit');
+    } else if (optionType === 'doubt') {
+      setQuizResult('doubt');
+      setQuizCompleted(true);
+      trackQuizComplete('doubt');
+    } else if (optionType === 'advance') {
+      if (quizStep < quizQuestions.length - 1) {
+        setQuizStep(prev => prev + 1);
+      } else {
+        setQuizResult('eagle');
+        setQuizCompleted(true);
+        trackQuizComplete('eagle');
+        setTimeout(() => {
+          document.getElementById("offer")?.scrollIntoView({ behavior: "smooth" });
+        }, 1500);
+      }
     }
   };
 
@@ -50,13 +116,24 @@ const Index = () => {
 
   const handleVideoEnd = () => {
     setVideoEnded(true);
+    trackVideoEnd();
   };
 
   const handleStartVideo = () => {
     setVideoStarted(true);
+    trackVideoStart();
     if (videoRef.current) {
       videoRef.current.play();
     }
+  };
+
+  const handleSkipVideo = () => {
+    setVideoEnded(true);
+    trackVideoSkip();
+  };
+
+  const handleCheckoutClick = () => {
+    trackCheckout();
   };
 
   return (
@@ -133,7 +210,7 @@ const Index = () => {
         {/* Botão para pular vídeo - só aparece após iniciar */}
         {videoStarted && (
           <button 
-            onClick={handleVideoEnd}
+            onClick={handleSkipVideo}
             className="absolute bottom-8 right-8 bg-secondary/80 backdrop-blur-sm border border-border px-4 py-2 rounded-full text-sm text-muted-foreground hover:text-foreground hover:border-primary transition-all"
           >
             Pular vídeo →
@@ -150,8 +227,8 @@ const Index = () => {
           <div className="bg-secondary border border-border px-3.5 py-1.5 rounded-[20px] text-xs text-muted-foreground">
             🔥 Oferta ativa
           </div>
-          <div className="bg-secondary border border-border px-3.5 py-1.5 rounded-[20px] text-xs text-muted-foreground">
-            👁️ 5 mães agora
+          <div className="bg-secondary border border-border px-3.5 py-1.5 rounded-[20px] text-xs text-muted-foreground animate-pulse">
+            👁️ {viewerCount} mães agora
           </div>
         </div>
 
@@ -204,6 +281,7 @@ const Index = () => {
 
         <a
           href={CHECKOUT_URL}
+          onClick={handleCheckoutClick}
           className="block w-full gradient-primary text-primary-foreground py-5 text-lg font-black rounded-[14px] shadow-glow text-center uppercase tracking-wide"
         >
           🛡️ Quero Proteger Meu Bebê Agora
@@ -211,24 +289,46 @@ const Index = () => {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          QUIZ INTERATIVO
+          QUIZ INTERATIVO - FUNIL DE CONVERSÃO
       ═══════════════════════════════════════════════════════════ */}
-      <section className="gradient-card border border-border rounded-[18px] p-[22px] my-9">
+      <section className="gradient-card border-2 border-primary/30 rounded-[18px] p-[22px] my-9">
         {!quizStarted ? (
+          // TELA INICIAL DO QUIZ
           <div className="text-center">
-            <img src={avatarThinking} alt="Quiz" className="w-24 h-24 mx-auto mb-4 object-contain" />
-            <h2 className="text-lg font-bold mb-3">Descubra seu perfil de mãe</h2>
-            <p className="text-muted-foreground text-sm mb-5">
-              Responda 3 perguntas rápidas e veja como o MamãeZen pode te ajudar.
+            <div className="relative mb-6">
+              <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full"></div>
+              <img src={avatarThinking} alt="Quiz" className="relative w-28 h-28 mx-auto object-contain" />
+            </div>
+            
+            <div className="inline-flex items-center gap-2 bg-primary/20 border border-primary/30 rounded-full px-4 py-2 mb-4">
+              <span className="text-sm font-bold text-primary">⚠️ ALERTA IMPORTANTE</span>
+            </div>
+            
+            <h2 className="text-xl font-black mb-3">
+              A cada <span className="text-primary">15 segundos</span> uma mulher está sofrendo
+            </h2>
+            <p className="text-muted-foreground text-base mb-5">
+              sem saber colocar seu bebê para arrotar...
             </p>
+            
+            <div className="bg-primary/10 border border-primary/30 rounded-xl p-4 mb-6">
+              <p className="text-foreground font-bold text-lg mb-2">3 coisas podem acontecer:</p>
+              <div className="flex justify-center gap-4 text-sm">
+                <span className="text-muted-foreground">😰 Engasgo</span>
+                <span className="text-muted-foreground">😮‍💨 Desengasgo</span>
+                <span className="text-primary font-bold">💔 Ou a morte</span>
+              </div>
+            </div>
+            
             <button
-              onClick={() => setQuizStarted(true)}
-              className="w-full gradient-primary text-primary-foreground py-3 rounded-[14px] font-bold text-sm"
+              onClick={handleStartQuiz}
+              className="w-full gradient-primary text-primary-foreground py-4 rounded-[14px] font-black text-base uppercase tracking-wide shadow-glow"
             >
-              Começar Quiz
+              🦅 Descobrir se sou uma Mãe Águia
             </button>
           </div>
         ) : !quizCompleted ? (
+          // PERGUNTAS DO QUIZ
           <div>
             <div className="flex justify-between items-center mb-4">
               <span className="text-xs text-muted-foreground">
@@ -238,14 +338,31 @@ const Index = () => {
             </div>
             <div className="w-full bg-muted rounded-full h-2 mb-6">
               <div 
-                className="bg-primary h-2 rounded-full transition-all duration-300"
+                className="bg-primary h-2 rounded-full transition-all duration-500"
                 style={{ width: `${progress}%` }}
               />
             </div>
 
-            <img src={avatarThinking} alt="Pensando" className="w-20 h-20 mx-auto mb-4 object-contain" />
+            <div className="relative mb-6">
+              <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full"></div>
+              <img 
+                src={quizQuestions[quizStep].avatar} 
+                alt="Quiz" 
+                className="relative w-24 h-24 mx-auto object-contain" 
+              />
+            </div>
 
-            <h3 className="text-base font-bold mb-5 text-center">
+            {/* Intro e Warning */}
+            <div className="bg-secondary/70 border border-border rounded-xl p-4 mb-4">
+              <p className="text-foreground font-semibold text-center mb-2">
+                {quizQuestions[quizStep].intro}
+              </p>
+              <p className="text-primary text-sm font-bold text-center">
+                {quizQuestions[quizStep].warning}
+              </p>
+            </div>
+
+            <h3 className="text-lg font-black mb-5 text-center text-primary">
               {quizQuestions[quizStep].question}
             </h3>
 
@@ -253,30 +370,90 @@ const Index = () => {
               {quizQuestions[quizStep].options.map((option, idx) => (
                 <button
                   key={idx}
-                  onClick={() => handleAnswer(idx)}
-                  className="w-full bg-secondary border border-border py-3 px-4 rounded-[12px] text-sm text-left hover:border-primary transition-colors"
+                  onClick={() => handleAnswer(option.type, option.text)}
+                  className={`w-full p-4 rounded-[12px] text-left transition-all duration-300 flex items-start gap-3 ${
+                    option.type === 'advance' 
+                      ? 'bg-primary/20 border-2 border-primary hover:bg-primary/30' 
+                      : 'bg-secondary border border-border hover:border-primary/50'
+                  }`}
                 >
-                  {option}
+                  <span className="text-2xl flex-shrink-0">{option.emoji}</span>
+                  <span className={`text-sm font-medium ${option.type === 'advance' ? 'text-foreground font-bold' : 'text-muted-foreground'}`}>
+                    {option.text}
+                  </span>
                 </button>
               ))}
             </div>
           </div>
         ) : (
+          // RESULTADO DO QUIZ
           <div className="text-center">
-            <img src={avatarVictory} alt="Parabéns" className="w-24 h-24 mx-auto mb-4 object-contain" />
-            <h2 className="text-lg font-bold mb-2 text-primary">Resultado: Você precisa do MamãeZen!</h2>
-            <p className="text-muted-foreground text-sm mb-5">
-              {score >= 7 
-                ? "Suas respostas mostram que você está sobrecarregada. O MamãeZen foi feito para mães como você."
-                : "O MamãeZen pode te ajudar a ter mais tranquilidade no dia a dia com seu bebê."
-              }
-            </p>
-            <a
-              href={CHECKOUT_URL}
-              className="block w-full gradient-primary text-primary-foreground py-3 rounded-[14px] font-bold text-sm"
-            >
-              Quero Começar Agora
-            </a>
+            {quizResult === 'eagle' ? (
+              <>
+                <div className="relative mb-6">
+                  <div className="absolute inset-0 bg-primary/30 blur-2xl rounded-full animate-pulse"></div>
+                  <img src={avatarVictory} alt="Parabéns" className="relative w-28 h-28 mx-auto object-contain" />
+                </div>
+                <div className="text-6xl mb-4">🦅</div>
+                <h2 className="text-2xl font-black mb-2 text-primary">VOCÊ É UMA MÃE ÁGUIA!</h2>
+                <p className="text-foreground text-base mb-5">
+                  Você está <span className="font-bold">pronta para proteger</span> seu filhote com todo conhecimento que precisa!
+                </p>
+                <a
+                  href={CHECKOUT_URL}
+                  onClick={handleCheckoutClick}
+                  className="block w-full gradient-primary text-primary-foreground py-4 rounded-[14px] font-black text-base uppercase shadow-glow"
+                >
+                  🛡️ Quero Meu Kit de Proteção Agora
+                </a>
+              </>
+            ) : quizResult === 'doubt' ? (
+              <>
+                <div className="relative mb-6">
+                  <img src={avatarThinking} alt="Entendo" className="w-24 h-24 mx-auto object-contain" />
+                </div>
+                <h2 className="text-xl font-black mb-3 text-foreground">Eu entendo você... 💭</h2>
+                <p className="text-muted-foreground text-sm mb-4">
+                  Mas pensa comigo: quanto vale a <span className="text-primary font-bold">segurança do seu bebê</span>?
+                </p>
+                <div className="bg-primary/10 border border-primary/30 rounded-xl p-4 mb-5">
+                  <p className="text-foreground text-base">
+                    Por apenas <span className="text-primary font-black text-xl">R$ 49,90</span> você terá conhecimento para <span className="font-bold">proteger seu filhote para sempre</span>.
+                  </p>
+                </div>
+                <a
+                  href={CHECKOUT_URL}
+                  onClick={handleCheckoutClick}
+                  className="block w-full gradient-primary text-primary-foreground py-4 rounded-[14px] font-black text-base uppercase shadow-glow"
+                >
+                  🦅 Quero Ser Uma Mãe Águia
+                </a>
+              </>
+            ) : (
+              <>
+                <div className="relative mb-6">
+                  <img src={avatarWelcome} alt="Tudo bem" className="w-24 h-24 mx-auto object-contain" />
+                </div>
+                <h2 className="text-xl font-black mb-3 text-foreground">Tudo bem! 😊</h2>
+                <p className="text-muted-foreground text-sm mb-4">
+                  Que bom que você tem apoio! Mas lembre-se: <span className="text-foreground font-semibold">conhecimento nunca é demais</span>.
+                </p>
+                <p className="text-muted-foreground text-sm mb-5">
+                  Se mudar de ideia, estarei aqui para te ajudar a se tornar uma <span className="text-primary font-bold">Mãe Águia</span>!
+                </p>
+                <button
+                  onClick={() => {
+                    setQuizCompleted(false);
+                    setQuizStarted(false);
+                    setQuizStep(0);
+                    setQuizResult(null);
+                  }}
+                  className="w-full bg-secondary border border-border py-3 rounded-[14px] font-bold text-sm text-muted-foreground hover:text-foreground hover:border-primary transition-all"
+                >
+                  Refazer o Quiz
+                </button>
+              </>
+            )}
           </div>
         )}
       </section>
@@ -505,6 +682,7 @@ const Index = () => {
 
         <a
           href={CHECKOUT_URL}
+          onClick={handleCheckoutClick}
           className="block w-full gradient-primary py-5 rounded-[14px] font-black text-primary-foreground text-lg uppercase tracking-wide shadow-glow"
         >
           🎯 Quero Minha Carta na Manga Agora
@@ -547,6 +725,7 @@ const Index = () => {
 
         <a
           href={CHECKOUT_URL}
+          onClick={handleCheckoutClick}
           className="block w-full gradient-primary py-5 rounded-[14px] font-black text-primary-foreground text-lg uppercase tracking-wide shadow-glow"
         >
           👑 Ser Fundadora MamãeZen Agora
