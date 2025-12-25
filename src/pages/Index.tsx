@@ -117,6 +117,8 @@ const Index = () => {
   const handleVideoEnd = () => {
     setVideoEnded(true);
     trackVideoEnd();
+    // Garante que a página começa do topo após o vídeo
+    window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
   const handleStartVideo = () => {
@@ -130,6 +132,8 @@ const Index = () => {
   const handleSkipVideo = () => {
     setVideoEnded(true);
     trackVideoSkip();
+    // Garante que a página começa do topo ao pular
+    window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
   const handleCheckoutClick = () => {
