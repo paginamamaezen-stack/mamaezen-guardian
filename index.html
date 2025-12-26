@@ -13,12 +13,20 @@
 
     <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- Google Analytics / Google Ads (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17714282754"></script>
+    <!-- Google Analytics 4 (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-168VP5MT7Q"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
+      
+      // Google Analytics 4
+      gtag('config', 'G-168VP5MT7Q', {
+        'send_page_view': true,
+        'debug_mode': false
+      });
+      
+      // Google Ads
       gtag('config', 'AW-17714282754');
       
       // Função de conversão do Google Ads para cliques
