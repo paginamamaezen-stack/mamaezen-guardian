@@ -3,6 +3,7 @@ import avatarMaeAguia from "@/assets/avatar-mae-aguia.png";
 import heroIntroVideo from "@/assets/hero-intro-video.mp4";
 import heroVideo from "@/assets/hero-video.mp4";
 import { useTracker } from "@/hooks/useTracker";
+import Footer from "@/components/landing/Footer";
 
 const CHECKOUT_URL = "https://pay.cakto.com.br/c88zju2_683076";
 
@@ -64,13 +65,24 @@ const quizQuestions = [
 
 const Index = () => {
   const { 
-    trackEvent, 
+    trackVideoScreenView,
     trackVideoStart, 
     trackVideoEnd, 
     trackVideoSkip, 
+    trackVideoProgress,
+    trackQuizScreenView,
     trackQuizStart, 
-    trackQuizAnswer, 
-    trackQuizComplete, 
+    trackQuizStep,
+    trackQuizAnswer,
+    trackQuizAdvance,
+    trackQuizExit,
+    trackQuizDoubt,
+    trackQuizComplete,
+    trackQuizSuccess,
+    trackQuizRetry,
+    trackContentUnlocked,
+    trackContentView,
+    trackScrollDepth,
     trackCheckout,
     trackCTAClick 
   } = useTracker();
@@ -83,12 +95,31 @@ const Index = () => {
   const [viewerCount, setViewerCount] = useState(7);
   const [videoEnded, setVideoEnded] = useState(false);
   const [videoStarted, setVideoStarted] = useState(false);
+  const [trackedScrollDepths, setTrackedScrollDepths] = useState<number[]>([]);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Track page view
+  // Track page view e scroll depth
   useEffect(() => {
-    trackEvent('page_view', { page: 'landing' });
-  }, []);
+    trackVideoScreenView();
+    
+    // Scroll tracking
+    const handleScroll = () => {
+      if (!showFullContent) return;
+      
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = Math.round((window.scrollY / scrollHeight) * 100);
+      
+      [25, 50, 75, 100].forEach(depth => {
+        if (scrollPercent >= depth && !trackedScrollDepths.includes(depth)) {
+          trackScrollDepth(depth);
+          setTrackedScrollDepths(prev => [...prev, depth]);
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [showFullContent, trackedScrollDepths]);
 
   // Contador de visualizações dinâmico
   useEffect(() => {
@@ -106,35 +137,38 @@ const Index = () => {
   const handleStartQuiz = () => {
     setQuizStarted(true);
     trackQuizStart();
-    trackCTAClick('quiz_start_button', 'quiz');
+    trackQuizStep(1);
   };
 
   const handleAnswer = (optionType: string, answerText: string) => {
-    trackQuizAnswer(quizStep + 1, answerText);
-    trackCTAClick(`quiz_option_${optionType}`, optionType);
+    trackQuizAnswer(quizStep + 1, answerText, optionType);
 
     if (optionType === 'exit') {
       setQuizResult('exit');
       setQuizCompleted(true);
       trackQuizComplete('exit');
-      trackEvent('quiz_exit', { step: quizStep + 1, reason: 'user_exit' });
+      trackQuizExit(quizStep + 1, 'user_exit');
     } else if (optionType === 'doubt') {
       setQuizResult('doubt');
       setQuizCompleted(true);
       trackQuizComplete('doubt');
-      trackEvent('quiz_doubt', { step: quizStep + 1 });
+      trackQuizDoubt(quizStep + 1);
     } else if (optionType === 'advance') {
       if (quizStep < quizQuestions.length - 1) {
-        setQuizStep(prev => prev + 1);
-        trackEvent('quiz_advance', { from_step: quizStep + 1, to_step: quizStep + 2 });
+        const nextStep = quizStep + 1;
+        setQuizStep(nextStep);
+        trackQuizAdvance(quizStep + 1, nextStep + 1);
+        trackQuizStep(nextStep + 1);
       } else {
         setQuizResult('eagle');
         setQuizCompleted(true);
         setShowFullContent(true);
         trackQuizComplete('eagle');
-        trackEvent('quiz_success', { completed_all_steps: true });
+        trackQuizSuccess();
+        trackContentUnlocked('quiz_success');
         setTimeout(() => {
           window.scrollTo({ top: 0, behavior: 'smooth' });
+          trackContentView();
         }, 500);
       }
     }
@@ -145,13 +179,13 @@ const Index = () => {
   const handleVideoEnd = () => {
     setVideoEnded(true);
     trackVideoEnd();
+    trackQuizScreenView();
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
   const handleStartVideo = () => {
     setVideoStarted(true);
     trackVideoStart();
-    trackCTAClick('video_start_button', 'video');
     if (videoRef.current) {
       videoRef.current.play();
     }
@@ -160,7 +194,7 @@ const Index = () => {
   const handleSkipVideo = () => {
     setVideoEnded(true);
     trackVideoSkip();
-    trackCTAClick('video_skip_button', 'quiz');
+    trackQuizScreenView();
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
@@ -171,10 +205,10 @@ const Index = () => {
 
   const handleShowContent = () => {
     setShowFullContent(true);
-    trackCTAClick('show_content_button', 'full_content');
-    trackEvent('content_unlocked', { method: 'reconsideration' });
+    trackContentUnlocked('reconsideration');
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      trackContentView();
     }, 100);
   };
 
@@ -182,9 +216,9 @@ const Index = () => {
     setQuizCompleted(false);
     setQuizStarted(false);
     setQuizStep(0);
+    const prevResult = quizResult;
     setQuizResult(null);
-    trackCTAClick('quiz_retry_button', 'quiz');
-    trackEvent('quiz_retry', { previous_result: quizResult });
+    trackQuizRetry(prevResult || 'unknown');
   };
 
   return (
@@ -746,6 +780,9 @@ const Index = () => {
                 🔒 Compra 100% segura • Garantia de 7 dias
               </p>
             </section>
+            
+            {/* FOOTER */}
+            <Footer />
           </div>
         )}
       </div>

@@ -13,13 +13,28 @@
 
     <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- Google Analytics (gtag.js) -->
+    <!-- Google Analytics / Google Ads (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17714282754"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'AW-17714282754');
+      
+      // Função de conversão do Google Ads para cliques
+      function gtag_report_conversion(url) {
+        var callback = function () {
+          if (typeof(url) != 'undefined') {
+            window.location = url;
+          }
+        };
+        gtag('event', 'conversion', {
+          'send_to': 'AW-17714282754/GNrRCK7D58kbEIKC6v5B',
+          'transaction_id': '',
+          'event_callback': callback
+        });
+        return false;
+      }
     </script>
     <meta property="og:title" content="MamãeZen – Proteção e Segurança">
   <meta name="twitter:title" content="MamãeZen – Proteção e Segurança">
