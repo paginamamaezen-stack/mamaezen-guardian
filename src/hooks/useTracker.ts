@@ -183,10 +183,30 @@ export const useTracker = () => {
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('mamaezen_track', { detail: eventData }));
       
-      // Google Analytics / Google Ads
+      // Google Analytics 4 (GA4) - Rastreamento Máximo
       if ((window as any).gtag) {
+        // Evento principal GA4
         (window as any).gtag('event', event, {
+          event_category: step,
+          event_label: event,
+          funnel_step: step,
+          session_id: getSessionId(),
+          user_id: getUserId(),
+          time_on_page: getTimeOnPage(),
           ...data,
+        });
+
+        // Evento customizado para relatórios personalizados
+        (window as any).gtag('event', `mz_${event}`, {
+          custom_parameter_1: step,
+          custom_parameter_2: event,
+          custom_parameter_3: JSON.stringify(data),
+          engagement_time_msec: getTimeOnPage() * 1000,
+        });
+
+        // Google Ads
+        (window as any).gtag('event', event, {
+          send_to: 'AW-17714282754',
           funnel_step: step,
           event_category: step,
           event_label: event,
