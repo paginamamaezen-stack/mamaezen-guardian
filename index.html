@@ -13,23 +13,91 @@
 
     <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- Google Analytics 4 (GA4) -->
+    <!-- Google Analytics 4 (GA4) + Google Ads - RASTREAMENTO MÁXIMO -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-168VP5MT7Q"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       
-      // Google Analytics 4
+      // ═══════════════════════════════════════════════════════════════════════
+      // GOOGLE ANALYTICS 4 - RASTREAMENTO MÁXIMO
+      // ═══════════════════════════════════════════════════════════════════════
+      
+      // Gerar IDs únicos
+      function getMzSessionId() {
+        var sid = sessionStorage.getItem('mz_session_id');
+        if (!sid) {
+          sid = 'mz_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+          sessionStorage.setItem('mz_session_id', sid);
+        }
+        return sid;
+      }
+      
+      function getMzUserId() {
+        var uid = localStorage.getItem('mz_user_id');
+        if (!uid) {
+          uid = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+          localStorage.setItem('mz_user_id', uid);
+        }
+        return uid;
+      }
+      
+      // Configuração GA4 com Enhanced Measurement
       gtag('config', 'G-168VP5MT7Q', {
         'send_page_view': true,
-        'debug_mode': false
+        'allow_google_signals': true,
+        'allow_ad_personalization_signals': true,
+        // Custom dimensions
+        'custom_map': {
+          'dimension1': 'session_id',
+          'dimension2': 'user_id',
+          'dimension3': 'funnel_step',
+          'dimension4': 'device_type',
+          'dimension5': 'traffic_source',
+          'dimension6': 'quiz_result',
+          'dimension7': 'time_on_page',
+          'dimension8': 'scroll_depth',
+          'dimension9': 'video_progress',
+          'dimension10': 'checkout_status',
+          'metric1': 'engagement_value',
+          'metric2': 'conversion_value'
+        },
+        'session_id': getMzSessionId(),
+        'user_id': getMzUserId(),
+        'page_location': window.location.href,
+        'page_title': document.title,
+        'page_referrer': document.referrer || 'direct',
+        'language': navigator.language,
+        'screen_resolution': screen.width + 'x' + screen.height
       });
       
-      // Google Ads
-      gtag('config', 'AW-17714282754');
+      // User Properties (Persistentes)
+      gtag('set', 'user_properties', {
+        'user_type': 'visitor',
+        'platform': 'web',
+        'first_visit_date': localStorage.getItem('mz_first_visit') || new Date().toISOString().split('T')[0],
+        'total_sessions': parseInt(localStorage.getItem('mz_sessions') || '0') + 1,
+        'device_category': /Mobile|Android|iPhone/i.test(navigator.userAgent) ? 'mobile' : 'desktop',
+        'browser': navigator.userAgent.match(/(Chrome|Safari|Firefox|Edge)/i)?.[1] || 'other'
+      });
       
-      // Função de conversão do Google Ads para cliques
+      // Salvar primeira visita
+      if (!localStorage.getItem('mz_first_visit')) {
+        localStorage.setItem('mz_first_visit', new Date().toISOString().split('T')[0]);
+      }
+      localStorage.setItem('mz_sessions', (parseInt(localStorage.getItem('mz_sessions') || '0') + 1).toString());
+      
+      // Google Ads
+      gtag('config', 'AW-17714282754', {
+        'allow_enhanced_conversions': true
+      });
+      
+      // ═══════════════════════════════════════════════════════════════════════
+      // FUNÇÕES DE RASTREAMENTO GLOBAL
+      // ═══════════════════════════════════════════════════════════════════════
+      
+      // Rastreamento de conversão Google Ads
       function gtag_report_conversion(url) {
         var callback = function () {
           if (typeof(url) != 'undefined') {
@@ -38,11 +106,155 @@
         };
         gtag('event', 'conversion', {
           'send_to': 'AW-17714282754/GNrRCK7D58kbEIKC6v5B',
-          'transaction_id': '',
+          'transaction_id': getMzSessionId(),
+          'value': 49.90,
+          'currency': 'BRL',
           'event_callback': callback
         });
         return false;
       }
+      
+      // Função global de rastreamento máximo
+      window.mzTrack = function(eventName, params) {
+        params = params || {};
+        var sessionStart = sessionStorage.getItem('mz_page_start') || Date.now();
+        sessionStorage.setItem('mz_page_start', sessionStart);
+        
+        var enrichedParams = {
+          session_id: getMzSessionId(),
+          user_id: getMzUserId(),
+          timestamp: new Date().toISOString(),
+          time_on_page: Math.floor((Date.now() - parseInt(sessionStart)) / 1000),
+          page_url: window.location.href,
+          screen_size: window.innerWidth + 'x' + window.innerHeight,
+          referrer: document.referrer || 'direct',
+          device_type: /Mobile|Android|iPhone/i.test(navigator.userAgent) ? 'mobile' : 'desktop'
+        };
+        
+        // Merge params
+        for (var key in params) {
+          enrichedParams[key] = params[key];
+        }
+        
+        // GA4 Event
+        gtag('event', eventName, enrichedParams);
+        
+        // Google Ads Event
+        gtag('event', eventName, {
+          'send_to': 'AW-17714282754',
+          'event_category': params.funnel_step || 'general',
+          'event_label': eventName
+        });
+        
+        console.log('📊 [TRACK]', eventName, enrichedParams);
+      };
+      
+      // ═══════════════════════════════════════════════════════════════════════
+      // RASTREAMENTO AUTOMÁTICO
+      // ═══════════════════════════════════════════════════════════════════════
+      
+      // Scroll Tracking
+      var scrollMilestones = {25: false, 50: false, 75: false, 90: false, 100: false};
+      window.addEventListener('scroll', function() {
+        var scrollPercent = Math.round((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100);
+        for (var milestone in scrollMilestones) {
+          if (scrollPercent >= parseInt(milestone) && !scrollMilestones[milestone]) {
+            scrollMilestones[milestone] = true;
+            window.mzTrack('scroll_depth', {
+              percent: milestone,
+              funnel_step: 'page_engagement',
+              engagement_value: parseInt(milestone)
+            });
+          }
+        }
+      });
+      
+      // Time on Page Tracking
+      var timeIntervals = [30, 60, 120, 300, 600];
+      var timeIndex = 0;
+      setInterval(function() {
+        if (timeIndex < timeIntervals.length) {
+          var targetTime = timeIntervals[timeIndex];
+          var currentTime = Math.floor((Date.now() - parseInt(sessionStorage.getItem('mz_page_start') || Date.now())) / 1000);
+          if (currentTime >= targetTime) {
+            window.mzTrack('time_on_page_milestone', {
+              seconds: targetTime,
+              funnel_step: 'engagement',
+              milestone: targetTime + 's'
+            });
+            timeIndex++;
+          }
+        }
+      }, 1000);
+      
+      // Visibility Change (Tab Switch)
+      document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'hidden') {
+          window.mzTrack('tab_hidden', {funnel_step: 'engagement', action: 'user_left_tab'});
+        } else {
+          window.mzTrack('tab_visible', {funnel_step: 'engagement', action: 'user_returned'});
+        }
+      });
+      
+      // Exit Intent
+      document.addEventListener('mouseout', function(e) {
+        if (e.clientY < 10 && !sessionStorage.getItem('exit_intent_fired')) {
+          sessionStorage.setItem('exit_intent_fired', 'true');
+          window.mzTrack('exit_intent', {funnel_step: 'engagement', action: 'mouse_exit_top'});
+        }
+      });
+      
+      // Page Unload
+      window.addEventListener('beforeunload', function() {
+        var sessionStart = sessionStorage.getItem('mz_page_start') || Date.now();
+        var totalTime = Math.floor((Date.now() - parseInt(sessionStart)) / 1000);
+        var funnelHistory = JSON.parse(sessionStorage.getItem('funnel_history') || '[]');
+        
+        navigator.sendBeacon && navigator.sendBeacon('https://www.google-analytics.com/g/collect?' + 
+          'v=2&tid=G-168VP5MT7Q&cid=' + getMzUserId() + 
+          '&en=page_exit&ep.time_total=' + totalTime + 
+          '&ep.funnel_history=' + encodeURIComponent(funnelHistory.join(','))
+        );
+      });
+      
+      // Click Tracking Global
+      document.addEventListener('click', function(e) {
+        var target = e.target.closest('button, a, [data-track]');
+        if (target) {
+          var trackData = {
+            element_type: target.tagName.toLowerCase(),
+            element_text: (target.innerText || '').substring(0, 50),
+            element_class: target.className,
+            funnel_step: 'click_tracking'
+          };
+          if (target.href) trackData.link_url = target.href;
+          if (target.dataset.track) trackData.track_id = target.dataset.track;
+          window.mzTrack('element_click', trackData);
+        }
+      });
+      
+      // Form Field Focus
+      document.addEventListener('focusin', function(e) {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+          window.mzTrack('form_field_focus', {
+            field_name: e.target.name || e.target.id || 'unknown',
+            field_type: e.target.type,
+            funnel_step: 'form_engagement'
+          });
+        }
+      });
+      
+      // Device Orientation
+      window.addEventListener('orientationchange', function() {
+        window.mzTrack('orientation_change', {
+          orientation: screen.orientation ? screen.orientation.type : 'unknown',
+          funnel_step: 'device'
+        });
+      });
+      
+      console.log('✅ MamãeZen Rastreamento Máximo Ativado - GA4 + Google Ads');
+      console.log('📊 Session:', getMzSessionId());
+      console.log('👤 User:', getMzUserId());
     </script>
     <meta property="og:title" content="MamãeZen – Proteção e Segurança">
   <meta name="twitter:title" content="MamãeZen – Proteção e Segurança">
