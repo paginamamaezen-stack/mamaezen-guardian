@@ -13,7 +13,7 @@
 
     <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- Google Analytics 4 (GA4) + Google Ads - RASTREAMENTO MÁXIMO -->
+    <!-- Google Analytics 4 (GA4) + Google Ads - RASTREAMENTO MÁXIMO COMPLETO -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-168VP5MT7Q"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -21,14 +21,15 @@
       gtag('js', new Date());
       
       // ═══════════════════════════════════════════════════════════════════════
-      // GOOGLE ANALYTICS 4 - RASTREAMENTO MÁXIMO
+      // GOOGLE ANALYTICS 4 - RASTREAMENTO MÁXIMO TOTAL
+      // Todos os eventos enviados com máximo detalhe para análise completa
       // ═══════════════════════════════════════════════════════════════════════
       
-      // Gerar IDs únicos
+      // Gerar IDs únicos persistentes
       function getMzSessionId() {
         var sid = sessionStorage.getItem('mz_session_id');
         if (!sid) {
-          sid = 'mz_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+          sid = 'mz_s_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
           sessionStorage.setItem('mz_session_id', sid);
         }
         return sid;
@@ -37,21 +38,107 @@
       function getMzUserId() {
         var uid = localStorage.getItem('mz_user_id');
         if (!uid) {
-          uid = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+          uid = 'mz_u_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
           localStorage.setItem('mz_user_id', uid);
         }
         return uid;
       }
+
+      // Incrementar e retornar total de sessões
+      function getTotalSessions() {
+        var sessions = parseInt(localStorage.getItem('mz_total_sessions') || '0') + 1;
+        localStorage.setItem('mz_total_sessions', sessions.toString());
+        return sessions;
+      }
+
+      // Detectar tipo de dispositivo
+      function getDeviceType() {
+        var ua = navigator.userAgent;
+        if (/tablet|ipad|playbook|silk/i.test(ua)) return 'tablet';
+        if (/mobile|iphone|ipod|android|blackberry|opera mini|iemobile/i.test(ua)) return 'mobile';
+        return 'desktop';
+      }
+
+      // Detectar navegador
+      function getBrowserName() {
+        var ua = navigator.userAgent;
+        if (ua.includes('Firefox')) return 'Firefox';
+        if (ua.includes('SamsungBrowser')) return 'Samsung';
+        if (ua.includes('Opera') || ua.includes('OPR')) return 'Opera';
+        if (ua.includes('Edge') || ua.includes('Edg')) return 'Edge';
+        if (ua.includes('Chrome')) return 'Chrome';
+        if (ua.includes('Safari')) return 'Safari';
+        return 'Other';
+      }
+
+      // Detectar SO
+      function getOS() {
+        var ua = navigator.userAgent;
+        if (ua.includes('Windows')) return 'Windows';
+        if (ua.includes('Mac')) return 'MacOS';
+        if (ua.includes('Linux')) return 'Linux';
+        if (ua.includes('Android')) return 'Android';
+        if (ua.includes('iPhone') || ua.includes('iPad')) return 'iOS';
+        return 'Other';
+      }
+
+      // Pegar UTMs
+      function getUTMParams() {
+        var params = new URLSearchParams(window.location.search);
+        return {
+          utm_source: params.get('utm_source') || 'organic',
+          utm_medium: params.get('utm_medium') || 'none',
+          utm_campaign: params.get('utm_campaign') || 'none',
+          utm_content: params.get('utm_content') || 'none',
+          utm_term: params.get('utm_term') || 'none',
+          gclid: params.get('gclid') || '',
+          fbclid: params.get('fbclid') || ''
+        };
+      }
+
+      // Inicialização de variáveis globais
+      var mzSessionId = getMzSessionId();
+      var mzUserId = getMzUserId();
+      var mzTotalSessions = getTotalSessions();
+      var mzDeviceType = getDeviceType();
+      var mzBrowser = getBrowserName();
+      var mzOS = getOS();
+      var mzPageLoadTime = Date.now();
+      var mzUTMs = getUTMParams();
       
-      // Configuração GA4 com Enhanced Measurement
+      // Estados do funil
+      window.mzFunnelHistory = [];
+      window.mzMaxScroll = 0;
+      window.mzVideoProgress = 0;
+      window.mzQuizStep = 0;
+      window.mzEngagementScore = 0;
+      window.mzClickCount = 0;
+      window.mzLastActivity = Date.now();
+
+      // Salvar primeira visita
+      if (!localStorage.getItem('mz_first_visit')) {
+        localStorage.setItem('mz_first_visit', new Date().toISOString().split('T')[0]);
+      }
+      
+      // ═══════════════════════════════════════════════════════════════════════
+      // CONFIGURAÇÃO GA4 COM DIMENSÕES PERSONALIZADAS COMPLETAS
+      // ═══════════════════════════════════════════════════════════════════════
+      
       gtag('config', 'G-168VP5MT7Q', {
         'send_page_view': true,
         'allow_google_signals': true,
         'allow_ad_personalization_signals': true,
-        // Custom dimensions
+        'session_id': mzSessionId,
+        'user_id': mzUserId,
+        'page_location': window.location.href,
+        'page_title': document.title,
+        'page_referrer': document.referrer || 'direct',
+        'language': navigator.language,
+        'screen_resolution': screen.width + 'x' + screen.height,
+        // Custom dimensions mapping
         'custom_map': {
           'dimension1': 'session_id',
-          'dimension2': 'user_id',
+          'dimension2': 'user_id', 
           'dimension3': 'funnel_step',
           'dimension4': 'device_type',
           'dimension5': 'traffic_source',
@@ -60,201 +147,436 @@
           'dimension8': 'scroll_depth',
           'dimension9': 'video_progress',
           'dimension10': 'checkout_status',
+          'dimension11': 'engagement_score',
+          'dimension12': 'funnel_history',
+          'dimension13': 'browser',
+          'dimension14': 'os',
+          'dimension15': 'utm_source',
+          'dimension16': 'utm_medium',
+          'dimension17': 'utm_campaign',
+          'dimension18': 'quiz_step',
+          'dimension19': 'content_section',
+          'dimension20': 'exit_reason',
           'metric1': 'engagement_value',
-          'metric2': 'conversion_value'
-        },
-        'session_id': getMzSessionId(),
-        'user_id': getMzUserId(),
-        'page_location': window.location.href,
-        'page_title': document.title,
-        'page_referrer': document.referrer || 'direct',
-        'language': navigator.language,
-        'screen_resolution': screen.width + 'x' + screen.height
+          'metric2': 'conversion_value',
+          'metric3': 'time_spent',
+          'metric4': 'click_count'
+        }
       });
       
-      // User Properties (Persistentes)
+      // User Properties permanentes
       gtag('set', 'user_properties', {
-        'user_type': 'visitor',
+        'user_type': mzTotalSessions === 1 ? 'new_visitor' : 'returning_visitor',
         'platform': 'web',
-        'first_visit_date': localStorage.getItem('mz_first_visit') || new Date().toISOString().split('T')[0],
-        'total_sessions': parseInt(localStorage.getItem('mz_sessions') || '0') + 1,
-        'device_category': /Mobile|Android|iPhone/i.test(navigator.userAgent) ? 'mobile' : 'desktop',
-        'browser': navigator.userAgent.match(/(Chrome|Safari|Firefox|Edge)/i)?.[1] || 'other'
+        'first_visit_date': localStorage.getItem('mz_first_visit'),
+        'total_sessions': mzTotalSessions,
+        'device_category': mzDeviceType,
+        'browser_name': mzBrowser,
+        'os_name': mzOS,
+        'screen_resolution': screen.width + 'x' + screen.height,
+        'language': navigator.language,
+        'timezone': Intl.DateTimeFormat().resolvedOptions().timeZone
       });
       
-      // Salvar primeira visita
-      if (!localStorage.getItem('mz_first_visit')) {
-        localStorage.setItem('mz_first_visit', new Date().toISOString().split('T')[0]);
-      }
-      localStorage.setItem('mz_sessions', (parseInt(localStorage.getItem('mz_sessions') || '0') + 1).toString());
-      
-      // Google Ads
+      // Google Ads com Enhanced Conversions
       gtag('config', 'AW-17714282754', {
         'allow_enhanced_conversions': true
       });
       
       // ═══════════════════════════════════════════════════════════════════════
-      // FUNÇÕES DE RASTREAMENTO GLOBAL
+      // FUNÇÃO GLOBAL DE RASTREAMENTO MÁXIMO
       // ═══════════════════════════════════════════════════════════════════════
       
-      // Rastreamento de conversão Google Ads
-      function gtag_report_conversion(url) {
-        var callback = function () {
-          if (typeof(url) != 'undefined') {
+      window.mzTrack = function(eventName, params) {
+        params = params || {};
+        var timeOnPage = Math.round((Date.now() - mzPageLoadTime) / 1000);
+        
+        // Adicionar ao histórico do funil
+        if (params.funnel_step && window.mzFunnelHistory.indexOf(params.funnel_step) === -1) {
+          window.mzFunnelHistory.push(params.funnel_step);
+        }
+
+        // Calcular score de engajamento dinâmico
+        window.mzEngagementScore = Math.min(100, Math.round(
+          (window.mzMaxScroll * 0.15) + 
+          (window.mzVideoProgress * 0.25) + 
+          (window.mzQuizStep * 8) + 
+          (Math.min(timeOnPage, 300) / 5) +
+          (window.mzClickCount * 2) +
+          (window.mzFunnelHistory.length * 5)
+        ));
+
+        // Dados completos do evento
+        var fullParams = {
+          // IDs
+          session_id: mzSessionId,
+          user_id: mzUserId,
+          // Tempo
+          time_on_page: timeOnPage,
+          timestamp: new Date().toISOString(),
+          timestamp_unix: Date.now(),
+          // Dispositivo
+          device_type: mzDeviceType,
+          browser: mzBrowser,
+          os: mzOS,
+          screen_size: screen.width + 'x' + screen.height,
+          viewport_size: window.innerWidth + 'x' + window.innerHeight,
+          pixel_ratio: window.devicePixelRatio || 1,
+          // Funil
+          funnel_step: params.funnel_step || 'unknown',
+          funnel_history: window.mzFunnelHistory.join(' > '),
+          funnel_depth: window.mzFunnelHistory.length,
+          // Engajamento
+          engagement_score: window.mzEngagementScore,
+          scroll_depth: window.mzMaxScroll,
+          video_progress: window.mzVideoProgress,
+          quiz_step: window.mzQuizStep,
+          click_count: window.mzClickCount,
+          // Tráfego
+          referrer: document.referrer || 'direct',
+          page_url: window.location.href,
+          page_path: window.location.pathname,
+          utm_source: mzUTMs.utm_source,
+          utm_medium: mzUTMs.utm_medium,
+          utm_campaign: mzUTMs.utm_campaign,
+          utm_content: mzUTMs.utm_content,
+          gclid: mzUTMs.gclid,
+          fbclid: mzUTMs.fbclid,
+          // Sessão
+          session_number: mzTotalSessions,
+          is_new_user: mzTotalSessions === 1,
+          // Extra
+          event_source: 'mamaezen_tracker'
+        };
+
+        // Merge com params passados
+        for (var key in params) {
+          fullParams[key] = params[key];
+        }
+
+        // ════════════ ENVIAR PARA GA4 ════════════
+        
+        // Evento principal com nome original
+        gtag('event', eventName, fullParams);
+        
+        // Evento com prefixo mz_ para fácil identificação
+        gtag('event', 'mz_' + eventName, {
+          category: fullParams.funnel_step,
+          label: eventName,
+          value: fullParams.engagement_score,
+          engagement_time_msec: timeOnPage * 1000
+        });
+
+        // ════════════ ENVIAR PARA GOOGLE ADS ════════════
+        gtag('event', eventName, {
+          'send_to': 'AW-17714282754',
+          'event_category': fullParams.funnel_step,
+          'event_label': eventName,
+          'value': fullParams.engagement_score / 100
+        });
+
+        // Log para debug
+        console.log('📊 [GA4] ' + eventName, {
+          step: fullParams.funnel_step,
+          score: fullParams.engagement_score + '%',
+          time: timeOnPage + 's',
+          funnel: window.mzFunnelHistory.length + ' steps'
+        });
+      };
+      
+      // ═══════════════════════════════════════════════════════════════════════
+      // CONVERSÃO GOOGLE ADS
+      // ═══════════════════════════════════════════════════════════════════════
+      
+      window.gtag_report_conversion = function(url, value) {
+        var callback = function() {
+          if (typeof(url) !== 'undefined') {
             window.location = url;
           }
         };
         gtag('event', 'conversion', {
           'send_to': 'AW-17714282754/GNrRCK7D58kbEIKC6v5B',
-          'transaction_id': getMzSessionId(),
-          'value': 49.90,
+          'value': value || 97.0,
           'currency': 'BRL',
+          'transaction_id': mzSessionId + '_' + Date.now(),
           'event_callback': callback
         });
         return false;
+      };
+
+      // ═══════════════════════════════════════════════════════════════════════
+      // RASTREAMENTO AUTOMÁTICO COMPLETO
+      // ═══════════════════════════════════════════════════════════════════════
+
+      // 1. SCROLL TRACKING DETALHADO
+      var scrollMilestones = [10, 25, 50, 75, 90, 100];
+      var scrollMilestonesReached = [];
+      
+      function handleScroll() {
+        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        var docHeight = Math.max(
+          document.documentElement.scrollHeight,
+          document.body.scrollHeight
+        ) - window.innerHeight;
+        var scrollPercent = docHeight > 0 ? Math.round((scrollTop / docHeight) * 100) : 0;
+        
+        window.mzMaxScroll = Math.max(window.mzMaxScroll, scrollPercent);
+        
+        scrollMilestones.forEach(function(milestone) {
+          if (scrollPercent >= milestone && scrollMilestonesReached.indexOf(milestone) === -1) {
+            scrollMilestonesReached.push(milestone);
+            window.mzTrack('scroll_depth_' + milestone, {
+              funnel_step: 'scroll_' + milestone,
+              scroll_percentage: milestone,
+              scroll_pixels: scrollTop,
+              page_height: docHeight + window.innerHeight,
+              visible_content: milestone + '% viewed'
+            });
+          }
+        });
       }
       
-      // Função global de rastreamento máximo
-      window.mzTrack = function(eventName, params) {
-        params = params || {};
-        var sessionStart = sessionStorage.getItem('mz_page_start') || Date.now();
-        sessionStorage.setItem('mz_page_start', sessionStart);
-        
-        var enrichedParams = {
-          session_id: getMzSessionId(),
-          user_id: getMzUserId(),
-          timestamp: new Date().toISOString(),
-          time_on_page: Math.floor((Date.now() - parseInt(sessionStart)) / 1000),
-          page_url: window.location.href,
-          screen_size: window.innerWidth + 'x' + window.innerHeight,
-          referrer: document.referrer || 'direct',
-          device_type: /Mobile|Android|iPhone/i.test(navigator.userAgent) ? 'mobile' : 'desktop'
-        };
-        
-        // Merge params
-        for (var key in params) {
-          enrichedParams[key] = params[key];
-        }
-        
-        // GA4 Event
-        gtag('event', eventName, enrichedParams);
-        
-        // Google Ads Event
-        gtag('event', eventName, {
-          'send_to': 'AW-17714282754',
-          'event_category': params.funnel_step || 'general',
-          'event_label': eventName
-        });
-        
-        console.log('📊 [TRACK]', eventName, enrichedParams);
-      };
+      window.addEventListener('scroll', handleScroll, { passive: true });
       
-      // ═══════════════════════════════════════════════════════════════════════
-      // RASTREAMENTO AUTOMÁTICO
-      // ═══════════════════════════════════════════════════════════════════════
+      // 2. TIME ON PAGE MILESTONES
+      var timeMilestones = [10, 30, 60, 90, 120, 180, 300, 600];
+      var timeMilestonesReached = [];
       
-      // Scroll Tracking
-      var scrollMilestones = {25: false, 50: false, 75: false, 90: false, 100: false};
-      window.addEventListener('scroll', function() {
-        var scrollPercent = Math.round((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100);
-        for (var milestone in scrollMilestones) {
-          if (scrollPercent >= parseInt(milestone) && !scrollMilestones[milestone]) {
-            scrollMilestones[milestone] = true;
-            window.mzTrack('scroll_depth', {
-              percent: milestone,
-              funnel_step: 'page_engagement',
-              engagement_value: parseInt(milestone)
-            });
-          }
-        }
-      });
-      
-      // Time on Page Tracking
-      var timeIntervals = [30, 60, 120, 300, 600];
-      var timeIndex = 0;
       setInterval(function() {
-        if (timeIndex < timeIntervals.length) {
-          var targetTime = timeIntervals[timeIndex];
-          var currentTime = Math.floor((Date.now() - parseInt(sessionStorage.getItem('mz_page_start') || Date.now())) / 1000);
-          if (currentTime >= targetTime) {
-            window.mzTrack('time_on_page_milestone', {
-              seconds: targetTime,
-              funnel_step: 'engagement',
-              milestone: targetTime + 's'
+        var timeOnPage = Math.round((Date.now() - mzPageLoadTime) / 1000);
+        
+        timeMilestones.forEach(function(milestone) {
+          if (timeOnPage >= milestone && timeMilestonesReached.indexOf(milestone) === -1) {
+            timeMilestonesReached.push(milestone);
+            
+            var engagementLevel = 'low';
+            if (milestone >= 180) engagementLevel = 'high';
+            else if (milestone >= 60) engagementLevel = 'medium';
+            
+            window.mzTrack('time_milestone_' + milestone + 's', {
+              funnel_step: 'time_' + milestone,
+              seconds_on_page: milestone,
+              engagement_level: engagementLevel,
+              scroll_at_milestone: window.mzMaxScroll,
+              video_at_milestone: window.mzVideoProgress,
+              quiz_at_milestone: window.mzQuizStep
             });
-            timeIndex++;
           }
-        }
-      }, 1000);
+        });
+      }, 5000);
+
+      // 3. VISIBILIDADE DA ABA
+      var tabHiddenCount = 0;
+      var tabHiddenTime = 0;
       
-      // Visibility Change (Tab Switch)
       document.addEventListener('visibilitychange', function() {
         if (document.visibilityState === 'hidden') {
-          window.mzTrack('tab_hidden', {funnel_step: 'engagement', action: 'user_left_tab'});
+          tabHiddenCount++;
+          tabHiddenTime = Date.now();
+          window.mzTrack('tab_hidden', {
+            funnel_step: 'tab_switch',
+            hide_count: tabHiddenCount,
+            last_activity: Math.round((Date.now() - window.mzLastActivity) / 1000) + 's ago'
+          });
         } else {
-          window.mzTrack('tab_visible', {funnel_step: 'engagement', action: 'user_returned'});
-        }
-      });
-      
-      // Exit Intent
-      document.addEventListener('mouseout', function(e) {
-        if (e.clientY < 10 && !sessionStorage.getItem('exit_intent_fired')) {
-          sessionStorage.setItem('exit_intent_fired', 'true');
-          window.mzTrack('exit_intent', {funnel_step: 'engagement', action: 'mouse_exit_top'});
-        }
-      });
-      
-      // Page Unload
-      window.addEventListener('beforeunload', function() {
-        var sessionStart = sessionStorage.getItem('mz_page_start') || Date.now();
-        var totalTime = Math.floor((Date.now() - parseInt(sessionStart)) / 1000);
-        var funnelHistory = JSON.parse(sessionStorage.getItem('funnel_history') || '[]');
-        
-        navigator.sendBeacon && navigator.sendBeacon('https://www.google-analytics.com/g/collect?' + 
-          'v=2&tid=G-168VP5MT7Q&cid=' + getMzUserId() + 
-          '&en=page_exit&ep.time_total=' + totalTime + 
-          '&ep.funnel_history=' + encodeURIComponent(funnelHistory.join(','))
-        );
-      });
-      
-      // Click Tracking Global
-      document.addEventListener('click', function(e) {
-        var target = e.target.closest('button, a, [data-track]');
-        if (target) {
-          var trackData = {
-            element_type: target.tagName.toLowerCase(),
-            element_text: (target.innerText || '').substring(0, 50),
-            element_class: target.className,
-            funnel_step: 'click_tracking'
-          };
-          if (target.href) trackData.link_url = target.href;
-          if (target.dataset.track) trackData.track_id = target.dataset.track;
-          window.mzTrack('element_click', trackData);
-        }
-      });
-      
-      // Form Field Focus
-      document.addEventListener('focusin', function(e) {
-        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-          window.mzTrack('form_field_focus', {
-            field_name: e.target.name || e.target.id || 'unknown',
-            field_type: e.target.type,
-            funnel_step: 'form_engagement'
+          var hiddenDuration = tabHiddenTime ? Math.round((Date.now() - tabHiddenTime) / 1000) : 0;
+          window.mzTrack('tab_visible', {
+            funnel_step: 'tab_return',
+            hidden_duration: hiddenDuration,
+            return_count: tabHiddenCount
           });
         }
       });
-      
-      // Device Orientation
+
+      // 4. EXIT INTENT (mouse sai pela borda superior)
+      var exitIntentFired = false;
+      document.addEventListener('mouseout', function(e) {
+        if (e.clientY < 10 && !exitIntentFired && e.relatedTarget === null) {
+          exitIntentFired = true;
+          window.mzTrack('exit_intent', {
+            funnel_step: 'exit_intent',
+            last_scroll: window.mzMaxScroll,
+            last_funnel_step: window.mzFunnelHistory[window.mzFunnelHistory.length - 1] || 'page_view',
+            time_before_exit: Math.round((Date.now() - mzPageLoadTime) / 1000),
+            completed_quiz: window.mzQuizStep >= 3,
+            watched_video: window.mzVideoProgress > 0
+          });
+        }
+      });
+
+      // 5. SAÍDA DA PÁGINA (beforeunload)
+      window.addEventListener('beforeunload', function() {
+        var timeOnPage = Math.round((Date.now() - mzPageLoadTime) / 1000);
+        var lastStep = window.mzFunnelHistory[window.mzFunnelHistory.length - 1] || 'page_view';
+        
+        // Classificar tipo de saída
+        var exitType = 'bounce';
+        if (lastStep.includes('checkout')) exitType = 'checkout_redirect';
+        else if (lastStep.includes('offer')) exitType = 'abandoned_at_offer';
+        else if (lastStep.includes('quiz_result')) exitType = 'completed_quiz';
+        else if (lastStep.includes('quiz')) exitType = 'abandoned_quiz';
+        else if (lastStep.includes('video')) exitType = 'abandoned_video';
+        else if (timeOnPage > 120) exitType = 'engaged_exit';
+        
+        // Enviar via Beacon API
+        if (navigator.sendBeacon) {
+          var data = new URLSearchParams({
+            v: '2',
+            tid: 'G-168VP5MT7Q',
+            cid: mzUserId,
+            en: 'page_exit',
+            'ep.session_id': mzSessionId,
+            'ep.time_on_page': timeOnPage.toString(),
+            'ep.max_scroll': window.mzMaxScroll.toString(),
+            'ep.video_progress': window.mzVideoProgress.toString(),
+            'ep.quiz_step': window.mzQuizStep.toString(),
+            'ep.funnel_depth': window.mzFunnelHistory.length.toString(),
+            'ep.funnel_history': window.mzFunnelHistory.join('>').substring(0, 100),
+            'ep.engagement_score': window.mzEngagementScore.toString(),
+            'ep.exit_type': exitType,
+            'ep.last_step': lastStep
+          });
+          navigator.sendBeacon('https://www.google-analytics.com/g/collect?' + data.toString());
+        }
+      });
+
+      // 6. CLIQUES GLOBAIS
+      document.addEventListener('click', function(e) {
+        window.mzClickCount++;
+        window.mzLastActivity = Date.now();
+        
+        var target = e.target.closest('button, a, [data-track], [role="button"]');
+        if (target) {
+          var elementText = (target.innerText || target.textContent || '').trim().substring(0, 50);
+          var trackId = target.getAttribute('data-track') || elementText || target.tagName;
+          
+          window.mzTrack('element_click', {
+            funnel_step: 'click',
+            element_type: target.tagName.toLowerCase(),
+            element_text: elementText,
+            element_id: target.id || '',
+            element_class: (target.className || '').substring(0, 100),
+            element_href: target.href || '',
+            track_id: trackId,
+            click_x: e.clientX,
+            click_y: e.clientY,
+            click_number: window.mzClickCount
+          });
+        }
+      });
+
+      // 7. HOVER EM ELEMENTOS IMPORTANTES (CTAs)
+      var hoverTracked = [];
+      document.addEventListener('mouseover', function(e) {
+        var target = e.target.closest('button, a[href*="checkout"], [data-cta]');
+        if (target && hoverTracked.indexOf(target) === -1) {
+          hoverTracked.push(target);
+          window.mzTrack('cta_hover', {
+            funnel_step: 'cta_interest',
+            element_text: (target.innerText || '').substring(0, 50),
+            element_type: target.tagName.toLowerCase()
+          });
+        }
+      });
+
+      // 8. FORMULÁRIOS
+      document.addEventListener('focusin', function(e) {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+          window.mzLastActivity = Date.now();
+          window.mzTrack('form_field_focus', {
+            funnel_step: 'form_interaction',
+            field_name: e.target.name || e.target.id || 'unknown',
+            field_type: e.target.type || e.target.tagName.toLowerCase()
+          });
+        }
+      });
+
+      // 9. ORIENTAÇÃO DO DISPOSITIVO
       window.addEventListener('orientationchange', function() {
-        window.mzTrack('orientation_change', {
-          orientation: screen.orientation ? screen.orientation.type : 'unknown',
-          funnel_step: 'device'
+        var orientation = screen.orientation ? screen.orientation.type : 
+          (window.innerWidth > window.innerHeight ? 'landscape' : 'portrait');
+        window.mzTrack('device_orientation', {
+          funnel_step: 'orientation_change',
+          orientation: orientation,
+          screen_size: screen.width + 'x' + screen.height
         });
       });
-      
-      console.log('✅ MamãeZen Rastreamento Máximo Ativado - GA4 + Google Ads');
-      console.log('📊 Session:', getMzSessionId());
-      console.log('👤 User:', getMzUserId());
+
+      // 10. ERROS JAVASCRIPT
+      window.addEventListener('error', function(e) {
+        window.mzTrack('javascript_error', {
+          funnel_step: 'error',
+          error_message: (e.message || 'unknown').substring(0, 200),
+          error_file: (e.filename || '').substring(0, 100),
+          error_line: e.lineno || 0,
+          error_col: e.colno || 0
+        });
+      });
+
+      // 11. ATIVIDADE DO USUÁRIO (para detectar idle)
+      var activityEvents = ['mousemove', 'touchstart', 'keydown', 'scroll'];
+      activityEvents.forEach(function(eventType) {
+        window.addEventListener(eventType, function() {
+          window.mzLastActivity = Date.now();
+        }, { passive: true });
+      });
+
+      // 12. DETECTAR USUÁRIO INATIVO
+      setInterval(function() {
+        var idleTime = Math.round((Date.now() - window.mzLastActivity) / 1000);
+        if (idleTime === 30) {
+          window.mzTrack('user_idle_30s', {
+            funnel_step: 'idle',
+            idle_seconds: 30,
+            last_funnel_step: window.mzFunnelHistory[window.mzFunnelHistory.length - 1] || 'page_view'
+          });
+        }
+        if (idleTime === 60) {
+          window.mzTrack('user_idle_60s', {
+            funnel_step: 'idle',
+            idle_seconds: 60
+          });
+        }
+      }, 5000);
+
+      // 13. PERFORMANCE DA PÁGINA
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          if (window.performance && performance.getEntriesByType) {
+            var perf = performance.getEntriesByType('navigation')[0];
+            var paint = performance.getEntriesByType('paint');
+            if (perf) {
+              window.mzTrack('page_performance', {
+                funnel_step: 'page_loaded',
+                load_time_ms: Math.round(perf.loadEventEnd - perf.startTime),
+                dom_ready_ms: Math.round(perf.domContentLoadedEventEnd - perf.startTime),
+                first_paint_ms: paint[0] ? Math.round(paint[0].startTime) : 0,
+                first_contentful_paint_ms: paint[1] ? Math.round(paint[1].startTime) : 0,
+                transfer_size: perf.transferSize || 0,
+                connection_type: navigator.connection ? navigator.connection.effectiveType : 'unknown'
+              });
+            }
+          }
+        }, 2000);
+      });
+
+      // 14. PAGE VIEW INICIAL
+      window.mzTrack('page_view', {
+        funnel_step: 'page_load',
+        page_type: 'landing_page',
+        entry_point: document.referrer ? 'referral' : 'direct',
+        is_returning: mzTotalSessions > 1,
+        session_number: mzTotalSessions
+      });
+
+      console.log('═══════════════════════════════════════════════════════════');
+      console.log('✅ MamãeZen RASTREAMENTO MÁXIMO TOTAL ATIVADO');
+      console.log('📊 GA4: G-168VP5MT7Q | Google Ads: AW-17714282754');
+      console.log('🔑 Session:', mzSessionId);
+      console.log('👤 User:', mzUserId, '| Sessions:', mzTotalSessions);
+      console.log('📱 Device:', mzDeviceType, '| Browser:', mzBrowser, '| OS:', mzOS);
+      console.log('🎯 UTM:', mzUTMs.utm_source, '/', mzUTMs.utm_medium, '/', mzUTMs.utm_campaign);
+      console.log('═══════════════════════════════════════════════════════════');
     </script>
     <meta property="og:title" content="MamãeZen – Proteção e Segurança">
   <meta name="twitter:title" content="MamãeZen – Proteção e Segurança">
